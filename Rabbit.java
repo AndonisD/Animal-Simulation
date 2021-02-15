@@ -67,6 +67,7 @@ public class Rabbit extends Animal
             else {
                 // Overcrowding.
                 setDead();
+                System.out.println("Rabbit died");
             }
         }
     }
