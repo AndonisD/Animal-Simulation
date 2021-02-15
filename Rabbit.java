@@ -21,7 +21,7 @@ public class Rabbit extends Animal
     // The likelihood of a rabbit breeding.
     private static final double BREEDING_PROBABILITY = 0.12;
     //
-    private static final int PREGNANCY_PERIOD = 5;
+    private static final int PREGNANCY_PERIOD = 1;
     // The maximum number of births.
     private static final int MAX_LITTER_SIZE = 4;
     // A shared random number generator to control breeding.
@@ -82,7 +82,7 @@ public class Rabbit extends Animal
         double deathProbability = 0.0;
         if(age > AGE_OF_DECAY) {
             deathProbability = deathProbability + RATE_OF_DECAY;
-            if(new Random().nextDouble() <= deathProbability) {
+            if(rand.nextDouble() <= deathProbability) {
                 setDead();
             }
         }
@@ -117,6 +117,7 @@ public class Rabbit extends Animal
         int births = 0;
         pregnancyPeriod--;
         if(canBreed() && rand.nextDouble() <= BREEDING_PROBABILITY) {
+            System.out.println("gave birth");
             births = rand.nextInt(MAX_LITTER_SIZE) + 1;
             pregnancyPeriod = PREGNANCY_PERIOD;
         }
@@ -124,11 +125,12 @@ public class Rabbit extends Animal
     }
 
     /**
-     * A rabbit can breed if it has reached the breeding age.
+     * A rabbit can breed if it has reached the breeding age 
+     * and its pregnancy period is over.
      * @return true if the rabbit can breed, false otherwise.
      */
     private boolean canBreed()
     {
-        return age >= BREEDING_AGE && pregnancyPeriod == 0;
+        return age >= BREEDING_AGE && pregnancyPeriod <= 0;
     }
 }
