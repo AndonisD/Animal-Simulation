@@ -33,6 +33,8 @@ public class SmallFish extends Animal
     private int age;
     // The steps left before next pregnancy.
     private int timeUntilImpregnation;
+    // The probability of a small fish dying.
+    private double deathProbability;
 
     /**
      * Create a new small fish. A small fish is created with age
@@ -46,6 +48,7 @@ public class SmallFish extends Animal
         super(field, location);
         age = 0;
         timeUntilImpregnation = PREGNANCY_PERIOD;
+        deathProbability = 0.0;
     }
     
     /**
@@ -79,7 +82,6 @@ public class SmallFish extends Animal
     private void incrementAge()
     {
         age++;
-        double deathProbability = 0.0;
         if(age > AGE_OF_DECAY) {
             deathProbability = deathProbability + RATE_OF_DECAY;
             if(rand.nextDouble() <= deathProbability) {
