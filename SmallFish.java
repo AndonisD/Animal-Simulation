@@ -58,13 +58,6 @@ public class SmallFish extends Animal
         if(rand.nextDouble() <= MALE_TO_FEMALE_RATIO){
             changeGender();
         }
-        
-        if(isFemale){
-            System.out.println("female");
-        }
-        else{
-            System.out.println("male");
-        }
     }   
     
     /**
