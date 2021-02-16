@@ -2,25 +2,25 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * A simple model of a rabbit.
- * Rabbits age, move, breed, and die.
+ * A simple model of a small fish.
+ * Small fish age, move, breed, and die.
  * 
- * @author David J. Barnes and Michael Kölling
+ * @author David J. Barnes, Michael Kölling, Ivan Arabadzhiev, Adonis Daskalopulos
  * @version 2016.02.29 (2)
  */
-public class Rabbit extends Animal
+public class SmallFish extends Animal
 {
-    // Characteristics shared by all rabbits (class variables).
+    // Characteristics shared by all small fish (class variables).
 
-    // The age at which a rabbit can start to breed.
+    // The age at which a small fish can start to breed.
     private static final int BREEDING_AGE = 5;
-    // The age to which a rabbit can live.
+    // The age at which a small fish starts to have a chance of dying of age.
     private static final int AGE_OF_DECAY = 30;
-    //
+    // The likelihood of a small fish dying.
     private static final double RATE_OF_DECAY = 0.1;
-    // The likelihood of a rabbit breeding.
+    // The likelihood of a small fish breeding.
     private static final double BREEDING_PROBABILITY = 0.12;
-    //
+    // The minimun of steps before next pregnancy.
     private static final int PREGNANCY_PERIOD = 1;
     // The maximum number of births.
     private static final int MAX_LITTER_SIZE = 4;
@@ -29,36 +29,36 @@ public class Rabbit extends Animal
     
     // Individual characteristics (instance fields).
     
-    // The rabbit's age.
+    // The small fish's age.
     private int age;
-    //
-    private int pregnancyPeriod; // better name pls timeUntilBirth
+    // The steps left before next pregnancy.
+    private int timeUntilImpregnation;
 
     /**
-     * Create a new rabbit. A rabbit may be created with age
-     * zero (a new born) or with a random age.
+     * Create a new small fish. A small fish is created with age
+     * zero (a new born). The pregnancy period is set in.
      * 
-     * @param randomAge If true, the rabbit will have a random age.
      * @param field The field currently occupied.
      * @param location The location within the field.
      */
-    public Rabbit(Field field, Location location)
+    public SmallFish(Field field, Location location)
     {
         super(field, location);
         age = 0;
-        pregnancyPeriod = PREGNANCY_PERIOD;
+        timeUntilImpregnation = PREGNANCY_PERIOD;
     }
     
     /**
-     * This is what the rabbit does most of the time - it runs 
+     * This is what the small fish does most of the time - it swims 
      * around. Sometimes it will breed or die of old age.
-     * @param newRabbits A list to return newly born rabbits.
+     * 
+     * @param newSmallFish A list to return newly hatched small fish.
      */
-    public void act(List<Animal> newRabbits)
+    public void act(List<Animal> newSmallFish)
     {
         incrementAge();
         if(isAlive()) {
-            giveBirth(newRabbits);            
+            giveBirth(newSmallFish);            
             // Try to move into a free location.
             Location newLocation = getField().freeAdjacentLocation(getLocation());
             if(newLocation != null) {
@@ -74,7 +74,7 @@ public class Rabbit extends Animal
 
     /**
      * Increase the age.
-     * This could result in the rabbit's death.
+     * This could result in the small fish's death, depending on its age.
      */
     private void incrementAge()
     {
@@ -89,11 +89,12 @@ public class Rabbit extends Animal
     }
     
     /**
-     * Check whether or not this rabbit is to give birth at this step.
+     * Check whether or not this small fish is to give birth at this step.
      * New births will be made into free adjacent locations.
-     * @param newRabbits A list to return newly born rabbits.
+     * 
+     * @param newSmallFish A list to return newly born rabbits.
      */
-    private void giveBirth(List<Animal> newRabbits)
+    private void giveBirth(List<Animal> newSmallFish)
     {
         // New rabbits are born into adjacent locations.
         // Get a list of adjacent free locations.
@@ -102,35 +103,36 @@ public class Rabbit extends Animal
         int births = breed();
         for(int b = 0; b < births && free.size() > 0; b++) {
             Location loc = free.remove(0);
-            Rabbit young = new Rabbit(field, loc);
-            newRabbits.add(young);
+            SmallFish young = new SmallFish(field, loc);
+            newSmallFish.add(young);
         }
     }
         
     /**
      * Generate a number representing the number of births,
      * if it can breed.
+     * 
      * @return The number of births (may be zero).
      */
     private int breed()
     {
         int births = 0;
-        pregnancyPeriod--;
+        timeUntilImpregnation--;
         if(canBreed() && rand.nextDouble() <= BREEDING_PROBABILITY) {
-            System.out.println("gave birth");
             births = rand.nextInt(MAX_LITTER_SIZE) + 1;
-            pregnancyPeriod = PREGNANCY_PERIOD;
+            timeUntilImpregnation = PREGNANCY_PERIOD;
         }
         return births;
     }
 
     /**
-     * A rabbit can breed if it has reached the breeding age 
+     * A small fish can breed if it has reached the breeding age 
      * and its pregnancy period is over.
-     * @return true if the rabbit can breed, false otherwise.
+     * 
+     * @return true if the small fish can breed, false otherwise.
      */
     private boolean canBreed()
     {
-        return age >= BREEDING_AGE && pregnancyPeriod <= 0;
+        return age >= BREEDING_AGE && timeUntilImpregnation <= 0;
     }
 }
