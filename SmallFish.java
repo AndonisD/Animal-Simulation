@@ -16,7 +16,7 @@ public class SmallFish extends Animal
     private static final int BREEDING_AGE = 5;
     // The age at which a small fish starts to have a chance of dying of age.
     private static final int AGE_OF_DECAY = 30;
-    // The likelihood of a small fish dying.
+    // The rate of change of death probability.
     private static final double RATE_OF_DECAY = 0.1;
     // The likelihood of a small fish breeding.
     private static final double BREEDING_PROBABILITY = 0.12;
