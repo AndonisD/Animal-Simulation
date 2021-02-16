@@ -120,9 +120,9 @@ public class Fox extends Animal
             Location where = it.next();
             Object animal = field.getObjectAt(where);
             if(animal instanceof SmallFish) {
-                SmallFish rabbit = (SmallFish) animal;
-                if(rabbit.isAlive()) { 
-                    rabbit.setDead();
+                SmallFish smallFish = (SmallFish) animal;
+                if(smallFish.isAlive()) { 
+                    smallFish.setDead();
                     foodLevel = RABBIT_FOOD_VALUE;
                     return where;
                 }
