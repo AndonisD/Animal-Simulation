@@ -109,6 +109,7 @@ public class Fox extends Animal
     /**
      * Look for rabbits adjacent to the current location.
      * Only the first live rabbit is eaten.
+     * 
      * @return Where food was found, or null if it wasn't.
      */
     private Location findFood()

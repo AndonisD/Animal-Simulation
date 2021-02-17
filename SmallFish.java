@@ -4,10 +4,10 @@ import java.util.Iterator;
 
 /**
  * A simple model of a small fish.
- * Small fish age, move, breed, and die.
+ * Small fish age, move, feed, breed, and die.
  * 
  * @author David J. Barnes, Michael Kölling, Ivan Arabadzhiev, Adonis Daskalopulos
- * @version 2016.02.29 (2)
+ * @version 2021.02.17
  */
 public class SmallFish extends Animal
 {
@@ -25,25 +25,26 @@ public class SmallFish extends Animal
     private static final int PREGNANCY_PERIOD = 1;
     // The maximum number of births.
     private static final int MAX_LITTER_SIZE = 4;
-    
+    // The probability of a female meeting a male.
     private static final double MALE_TO_FEMALE_RATIO = 0.5;
     // A shared random number generator to control breeding.
     private static final Random rand = Randomizer.getRandom();
-    
+
     // Individual characteristics (instance fields).
-    
+
     // The small fish's age.
     private int age;
     // The steps left before next pregnancy.
     private int timeUntilImpregnation;
     // The probability of a small fish dying.
     private double deathProbability;
-    
+    // The gender of a small fish.
     private boolean isFemale;
 
     /**
      * Create a new small fish. A small fish is created with age
-     * zero (a new born). The pregnancy period is set in.
+     * zero (a new born). The pregnancy period for females is set in. The gender is
+     * randomly decided.
      * 
      * @param field The field currently occupied.
      * @param location The location within the field.
@@ -59,10 +60,10 @@ public class SmallFish extends Animal
             changeGender();
         }
     }   
-    
+
     /**
      * This is what the small fish does most of the time - it swims 
-     * around. Sometimes it will breed or die of old age.
+     * around. It will search for a mate, breed or die of old age.
      * 
      * @param newSmallFish A list to return newly hatched small fish.
      */
@@ -71,9 +72,6 @@ public class SmallFish extends Animal
         incrementAge();
         if(isAlive()) {
             findMate(newSmallFish);
-            
-            //giveBirth(newSmallFish);
-            
             // Try to move into a free location.
             Location newLocation = getField().freeAdjacentLocation(getLocation());
             if(newLocation != null) {
@@ -82,7 +80,7 @@ public class SmallFish extends Animal
             else {
                 // Overcrowding.
                 setDead();
-                System.out.println("Rabbit died");
+                System.out.println("Small fish died");
             }
         }
     }
@@ -101,12 +99,30 @@ public class SmallFish extends Animal
             }
         }
     }
+
+    /**
+     * Change the gender of the small fish.
+     */
+    private void changeGender()
+    {
+        isFemale = !isFemale;
+    }
+
+    /**
+     * Check if the small fish is a female. If false, it is a male.
+     * 
+     * @return true if the small fish is female, false otherwise.
+     */
+    private boolean checkFemale()
+    {
+        return isFemale;
+    }
     
     /**
-     * An example of a method - replace this comment with your own
+     * The process of a small fish finding a mate of the same species
+     * and of the opposite gender.
      *
-     * @param  y  a sample parameter for a method
-     * @return    the sum of x and y
+     * @param  newSmallFish  A list to return newly born rabbits.
      */
     private void findMate(List<Animal> newSmallFish)
     {
@@ -121,13 +137,11 @@ public class SmallFish extends Animal
                 boolean mateGender = mate.checkFemale();
                 if(mate.isAlive() && isFemale == !mateGender) { 
                     impregnate(newSmallFish);
-                    
                 }
             }
         }
-        
     }
-    
+
     /**
      * Generate a number representing the number of births,
      * if it can breed.
@@ -143,9 +157,8 @@ public class SmallFish extends Animal
             timeUntilImpregnation = PREGNANCY_PERIOD;
             giveBirth(newSmallFish, litterSize);
         }
-        
     }
-    
+
     /**
      * Check whether or not this small fish is to give birth at this step.
      * New births will be made into free adjacent locations.
@@ -154,7 +167,7 @@ public class SmallFish extends Animal
      */
     private void giveBirth(List<Animal> newSmallFish, int litterSize)
     {
-        // New rabbits are born into adjacent locations.
+        // New small fish are born into adjacent locations.
         // Get a list of adjacent free locations.
         Field field = getField();
         List<Location> free = field.getFreeAdjacentLocations(getLocation());
@@ -164,11 +177,6 @@ public class SmallFish extends Animal
             newSmallFish.add(young);
         }
     }
-    
-    
-
-        
-    
 
     /**
      * A small fish can breed if it has reached the breeding age 
@@ -180,28 +188,4 @@ public class SmallFish extends Animal
     {
         return age >= BREEDING_AGE && timeUntilImpregnation <= 0;
     }
-    
-    /**
-     * An example of a method - replace this comment with your own
-     *
-     * @param  y  a sample parameter for a method
-     * @return    the sum of x and y
-     */
-    private void changeGender()
-    {
-        isFemale = !isFemale;
-    }
-    
-    
-    /**
-     * An example of a method - replace this comment with your own
-     *
-     * @param  y  a sample parameter for a method
-     * @return    the sum of x and y
-     */
-    public boolean checkFemale()
-    {
-        return isFemale;
-    }
-
 }
