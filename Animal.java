@@ -4,7 +4,7 @@ import java.util.List;
  * A class representing shared characteristics of animals.
  * 
  * @author David J. Barnes and Michael Kölling
- * @version 2016.02.29 (2)
+ * @version 2021.03.03
  */
 public abstract class Animal
 {

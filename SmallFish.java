@@ -7,7 +7,7 @@ import java.util.Iterator;
  * Small fish age, move, feed, breed, and die.
  * 
  * @author David J. Barnes, Michael Kölling, Ivan Arabadzhiev, Adonis Daskalopulos
- * @version 2021.02.17
+ * @version 2021.03.03
  */
 public class SmallFish extends Animal
 {
