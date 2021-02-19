@@ -1,5 +1,4 @@
 import java.util.List;
-import java.util.Random;
 import java.util.Iterator;
 
 /**
@@ -27,19 +26,6 @@ public class SmallFish extends Animal
     private static final int MAX_LITTER_SIZE = 4;
     // The probability of a female meeting a male.
     private static final double MALE_TO_FEMALE_RATIO = 0.5;
-    // A shared random number generator to control breeding.
-    private static final Random rand = Randomizer.getRandom();
-
-    // Individual characteristics (instance fields).
-
-    // The small fish's age.
-    private int age;
-    // The steps left before next pregnancy.
-    private int timeUntilImpregnation;
-    // The probability of a small fish dying.
-    private double deathProbability;
-    // The gender of a small fish.
-    private boolean isFemale;
 
     /**
      * Create a new small fish. A small fish is created with age
@@ -52,11 +38,7 @@ public class SmallFish extends Animal
     public SmallFish(Field field, Location location)
     {
         super(field, location);
-        age = 0;
-        timeUntilImpregnation = PREGNANCY_PERIOD;
-        deathProbability = 0.0;
-        isFemale = true;
-        if(rand.nextDouble() <= MALE_TO_FEMALE_RATIO){
+        if(getRandom().nextDouble() <= MALE_TO_FEMALE_RATIO){
             changeGender();
         }
     }   
@@ -67,9 +49,9 @@ public class SmallFish extends Animal
      * 
      * @param newSmallFish A list to return newly hatched small fish.
      */
-    public void act(List<Animal> newSmallFish)
+    public void act(List<Organism> newSmallFish)
     {
-        incrementAge();
+        incrementAge(AGE_OF_DECAY, RATE_OF_DECAY);
         if(isAlive()) {
             findMate(newSmallFish);
             // Try to move into a free location.
@@ -80,51 +62,17 @@ public class SmallFish extends Animal
             else {
                 // Overcrowding.
                 setDead();
-                System.out.println("Small fish died");
             }
         }
     }
 
-    /**
-     * Increase the age.
-     * This could result in the small fish's death, depending on its age.
-     */
-    private void incrementAge()
-    {
-        age++;
-        if(age > AGE_OF_DECAY) {
-            deathProbability = deathProbability + RATE_OF_DECAY;
-            if(rand.nextDouble() <= deathProbability) {
-                setDead();
-            }
-        }
-    }
-
-    /**
-     * Change the gender of the small fish.
-     */
-    private void changeGender()
-    {
-        isFemale = !isFemale;
-    }
-
-    /**
-     * Check if the small fish is a female. If false, it is a male.
-     * 
-     * @return true if the small fish is female, false otherwise.
-     */
-    private boolean checkFemale()
-    {
-        return isFemale;
-    }
-    
     /**
      * The process of a small fish finding a mate of the same species
      * and of the opposite gender.
      *
      * @param  newSmallFish  A list to return newly born rabbits.
      */
-    private void findMate(List<Animal> newSmallFish)
+    private void findMate(List<Organism> newSmallFish)
     {
         Field field = getField();
         List<Location> adjacent = field.adjacentLocations(getLocation());
@@ -135,27 +83,10 @@ public class SmallFish extends Animal
             if(animal instanceof SmallFish) {
                 SmallFish mate = (SmallFish) animal;
                 boolean mateGender = mate.checkFemale();
-                if(mate.isAlive() && isFemale == !mateGender) { 
-                    impregnate(newSmallFish);
+                if(mate.isAlive() && checkFemale() == !mateGender) { 
+                    giveBirth(newSmallFish, litterSize());
                 }
             }
-        }
-    }
-
-    /**
-     * Generate a number representing the number of births,
-     * if it can breed.
-     * 
-     * @return The number of births (may be zero).
-     */
-    private void impregnate(List<Animal> newSmallFish)
-    {
-        timeUntilImpregnation--;
-        if(canBreed() && rand.nextDouble() <= IMPREGNATION_PROBABILITY) {
-            int litterSize = 0;
-            litterSize = rand.nextInt(MAX_LITTER_SIZE) + 1;
-            timeUntilImpregnation = PREGNANCY_PERIOD;
-            giveBirth(newSmallFish, litterSize);
         }
     }
 
@@ -165,7 +96,7 @@ public class SmallFish extends Animal
      * 
      * @param newSmallFish A list to return newly born rabbits.
      */
-    private void giveBirth(List<Animal> newSmallFish, int litterSize)
+    private void giveBirth(List<Organism> newSmallFish, int litterSize)
     {
         // New small fish are born into adjacent locations.
         // Get a list of adjacent free locations.
@@ -177,15 +108,13 @@ public class SmallFish extends Animal
             newSmallFish.add(young);
         }
     }
-
+    
     /**
-     * A small fish can breed if it has reached the breeding age 
-     * and its pregnancy period is over.
      * 
-     * @return true if the small fish can breed, false otherwise.
      */
-    private boolean canBreed()
+    private int litterSize()
     {
-        return age >= BREEDING_AGE && timeUntilImpregnation <= 0;
+        return impregnate(BREEDING_AGE, MAX_LITTER_SIZE, PREGNANCY_PERIOD, 
+                          IMPREGNATION_PROBABILITY);
     }
 }

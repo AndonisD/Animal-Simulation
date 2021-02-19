@@ -3,18 +3,20 @@ import java.util.List;
 /**
  * A class representing shared characteristics of animals.
  * 
- * @author David J. Barnes and Michael Kölling
+ * @author David J. Barnes, Michael Kölling, Ivan Arabadzhiev and Adonis Daskalopulos
  * @version 2021.03.03
  */
-public abstract class Animal
+public abstract class Animal extends Organism
 {
-    // Whether the animal is alive or not.
-    private boolean alive;
-    // The animal's field.
-    private Field field;
-    // The animal's position in the field.
-    private Location location;
+    //
     
+    // The fox's food level, which is increased by eating rabbits.
+    private int foodLevel;
+    // The steps left before next pregnancy.
+    private int timeUntilImpregnation;
+    // The gender of a small fish.
+    private boolean isFemale;
+
     /**
      * Create a new animal at location in field.
      * 
@@ -23,69 +25,88 @@ public abstract class Animal
      */
     public Animal(Field field, Location location)
     {
-        alive = true;
-        this.field = field;
-        setLocation(location);
-    }
-    
-    /**
-     * Make this animal act - that is: make it do
-     * whatever it wants/needs to do.
-     * @param newAnimals A list to receive newly born animals.
-     */
-    abstract public void act(List<Animal> newAnimals);
-
-    /**
-     * Check whether the animal is alive or not.
-     * @return true if the animal is still alive.
-     */
-    protected boolean isAlive()
-    {
-        return alive;
+        super(field, location);
+        isFemale = true;
     }
 
     /**
-     * Indicate that the animal is no longer alive.
-     * It is removed from the field.
+     * Increase the age.
+     * This could result in the small fish's death, depending on its age.
      */
-    protected void setDead()
-    {
-        alive = false;
-        if(location != null) {
-            field.clear(location);
-            location = null;
-            field = null;
+    protected void incrementAge(int ageOfDecay, double rateOfDecay)
+     {
+        computeAge();
+        if(getAge() > ageOfDecay) {
+            computeDeathProbability(rateOfDecay);
+            if(getRandom().nextDouble() <= getDeathProbability()) {
+                setDead();
+            }
         }
     }
 
     /**
-     * Return the animal's location.
-     * @return The animal's location.
+     * Change the gender of the small fish.
      */
-    protected Location getLocation()
+    protected void changeGender()
     {
-        return location;
+        isFemale = !isFemale;
     }
-    
+
     /**
-     * Place the animal at the new location in the given field.
-     * @param newLocation The animal's new location.
+     * Generate a number representing the number of births,
+     * if it can breed.
+     * 
+     * @return The number of births (may be zero).
      */
-    protected void setLocation(Location newLocation)
+    protected int impregnate(int breedingAge, int maxLitterSize, 
+                             int pregnancyPeriod, double impregnationProbability)
     {
-        if(location != null) {
-            field.clear(location);
+        int litterSize = 0;
+        timeUntilImpregnation--;
+        if(canBreed(breedingAge) && getRandom().nextDouble() <= impregnationProbability) {
+            litterSize = getRandom().nextInt(maxLitterSize) + 1;
+            timeUntilImpregnation = pregnancyPeriod;
+            //giveBirth(newSmallFish, litterSize);
         }
-        location = newLocation;
-        field.place(this, newLocation);
+        return litterSize;
     }
-    
+
     /**
-     * Return the animal's field.
-     * @return The animal's field.
+     * A small fish can breed if it has reached the breeding age 
+     * and its pregnancy period is over.
+     * 
+     * @return true if the small fish can breed, false otherwise.
      */
-    protected Field getField()
+    protected boolean canBreed(int breedingAge)
     {
-        return field;
+        return getAge() >= breedingAge && timeUntilImpregnation <= 0;
+    }
+
+    // Instance fields accessor methods.
+
+    /**
+     * 
+     */
+    protected int getFoodLevel()
+    {
+        return foodLevel;
+    }
+
+    /**
+     * 
+     */
+    protected int getTimeUntilImpregnation()
+    {
+        return timeUntilImpregnation;
+    }
+
+    /**
+     * Check if the small fish is a female. If false, it is a male.
+     * 
+     * @return true if the small fish is female, false otherwise.
+     */
+    protected boolean checkFemale()
+    {
+        return isFemale;
     }
 }
