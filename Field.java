@@ -100,6 +100,7 @@ public class Field
         return field[row][col];
     }
     
+    
     /**
      * Generate a random location that is adjacent to the
      * given location, or is the same location.

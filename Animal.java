@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.Iterator;
 
 /**
  * A class representing shared characteristics of animals.
@@ -9,13 +10,12 @@ import java.util.List;
 public abstract class Animal extends Organism
 {
     //Characteristics shared by all animals (instance fields).
-    
-    // The animal's food level, which is increased by feeding from its food source.
-    private int foodLevel;
+
     // The steps left before next impregnation.
     private int timeUntilImpregnation;
     // The gender of an animal.
     private boolean isFemale;
+
 
     /**
      * Create a new female animal at location in field.
@@ -30,26 +30,66 @@ public abstract class Animal extends Organism
     }
 
     /**
-     * Increase the age.
-     * This could result in the animal's death, depending on its age.
-     */
-    protected void incrementAge(int ageOfDecay, double rateOfDecay)
-     {
-        computeAge();
-        if(getAge() > ageOfDecay) {
-            computeDeathProbability(rateOfDecay);
-            if(getRandom().nextDouble() <= getDeathProbability()) {
-                setDead();
-            }
-        }
-    }
-
-    /**
      * Change the gender of the animal.
      */
     protected void changeGender()
     {
         isFemale = !isFemale;
+    }
+
+    /**
+     * Look for rabbits adjacent to the current location.
+     * Only the first live rabbit is eaten.
+     * 
+     * @return Where food was found, or null if it wasn't.
+     */
+    protected Location findFood()
+    {
+        Field field = getField();
+        List<Location> adjacent = field.adjacentLocations(getLocation());
+        Iterator<Location> it = adjacent.iterator();
+        while(it.hasNext()) {
+            Location where = it.next();
+            Object organism = field.getObjectAt(where);
+            if(organism != null){
+                if(dietContains(organism.toString())) {
+                    Organism food = (Organism) organism;
+                    if(food.isAlive()) { 
+                        food.setDead();
+                        incrementFoodLevel(food.getFoodValue());
+                        return where;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * The process of a small fish finding a mate of the same species
+     * and of the opposite gender.
+     *
+     * @param  newSmallFish  A list to return newly hatched small fish.
+     */
+    protected boolean foundMate()
+    {
+        Field field = getField();
+        List<Location> adjacent = field.adjacentLocations(getLocation());
+        Iterator<Location> it = adjacent.iterator();
+        while(it.hasNext()) {
+            Location where = it.next();
+            Object organism = field.getObjectAt(where);
+            if(organism != null){
+                if(toString().equals(organism.toString())) {
+                    Animal mate = (Animal)organism;
+                    boolean mateGender = mate.checkFemale();
+                    if(mate.isAlive() && checkFemale() == !mateGender) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -64,7 +104,7 @@ public abstract class Animal extends Organism
      * @return The number of births (may be zero).
      */
     protected int impregnate(int breedingAge, int maxLitterSize, 
-                             int pregnancyPeriod, double impregnationProbability)
+    int pregnancyPeriod, double impregnationProbability)
     {
         int litterSize = 0;
         timeUntilImpregnation--;
@@ -87,16 +127,6 @@ public abstract class Animal extends Organism
     }
 
     // Instance fields accessor methods.
-
-    /**
-     * Return the food level of an animal.
-     * 
-     * @return The food level of the animal
-     */
-    protected int getFoodLevel()
-    {
-        return foodLevel;
-    }
 
     /**
      * Return the time before next impregnation.

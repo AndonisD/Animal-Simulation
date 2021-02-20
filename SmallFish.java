@@ -1,5 +1,5 @@
 import java.util.List;
-import java.util.Iterator;
+
 
 /**
  * A simple model of a small fish.
@@ -26,6 +26,8 @@ public class SmallFish extends Animal
     private static final int MAX_LITTER_SIZE = 4;
     // The probability of a female meeting a male.
     private static final double MALE_TO_FEMALE_RATIO = 0.5;
+    
+    private static final int FOOD_VALUE = 9;
 
     /**
      * Create a new small fish. A small fish is created with age
@@ -40,6 +42,8 @@ public class SmallFish extends Animal
         if(getRandom().nextDouble() <= MALE_TO_FEMALE_RATIO){
             changeGender();
         }
+        setSpeciesName("SmallFish");
+        setFoodValue(FOOD_VALUE);
     }   
 
     /**
@@ -52,7 +56,9 @@ public class SmallFish extends Animal
     {
         incrementAge(AGE_OF_DECAY, RATE_OF_DECAY);
         if(isAlive()) {
-            findMate(newSmallFish);
+            if(foundMate()){
+                giveBirth(newSmallFish, litterSize());
+            }
             // Try to move into a free location.
             Location newLocation = getField().freeAdjacentLocation(getLocation());
             if(newLocation != null) {
@@ -61,30 +67,6 @@ public class SmallFish extends Animal
             else {
                 // Overcrowding.
                 setDead();
-            }
-        }
-    }
-
-    /**
-     * The process of a small fish finding a mate of the same species
-     * and of the opposite gender.
-     *
-     * @param  newSmallFish  A list to return newly hatched small fish.
-     */
-    private void findMate(List<Organism> newSmallFish)
-    {
-        Field field = getField();
-        List<Location> adjacent = field.adjacentLocations(getLocation());
-        Iterator<Location> it = adjacent.iterator();
-        while(it.hasNext()) {
-            Location where = it.next();
-            Object animal = field.getObjectAt(where);
-            if(animal instanceof SmallFish) {
-                SmallFish mate = (SmallFish) animal;
-                boolean mateGender = mate.checkFemale();
-                if(mate.isAlive() && checkFemale() == !mateGender) { 
-                    giveBirth(newSmallFish, litterSize());
-                }
             }
         }
     }
