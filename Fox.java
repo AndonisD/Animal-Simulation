@@ -3,11 +3,11 @@ import java.util.Iterator;
 import java.util.Random;
 
 /**
- * A simple model of a fox.
- * Foxes age, move, eat rabbits, and die.
+ * A simple model of a Shark.
+ * Foxes age, move, eat, breed and die.
  * 
- * @author David J. Barnes and Michael Kölling
- * @version 2016.02.29 (2)
+ * @author David J. Barnes, Michael Kölling, Ivan Arabadzhiev and Adonis Daskalopulos
+ * @version 2021.03.03
  */
 public class Fox extends Animal
 {
@@ -28,6 +28,7 @@ public class Fox extends Animal
     private static final Random rand = Randomizer.getRandom();
     
     // Individual characteristics (instance fields).
+    
     // The fox's age.
     private int age;
     // The fox's food level, which is increased by eating rabbits.
