@@ -8,17 +8,17 @@ import java.util.List;
  */
 public abstract class Animal extends Organism
 {
-    //
+    //Characteristics shared by all animals (instance fields).
     
-    // The fox's food level, which is increased by eating rabbits.
+    // The animal's food level, which is increased by feeding from its food source.
     private int foodLevel;
-    // The steps left before next pregnancy.
+    // The steps left before next impregnation.
     private int timeUntilImpregnation;
-    // The gender of a small fish.
+    // The gender of an animal.
     private boolean isFemale;
 
     /**
-     * Create a new animal at location in field.
+     * Create a new female animal at location in field.
      * 
      * @param field The field currently occupied.
      * @param location The location within the field.
@@ -31,7 +31,7 @@ public abstract class Animal extends Organism
 
     /**
      * Increase the age.
-     * This could result in the small fish's death, depending on its age.
+     * This could result in the animal's death, depending on its age.
      */
     protected void incrementAge(int ageOfDecay, double rateOfDecay)
      {
@@ -45,7 +45,7 @@ public abstract class Animal extends Organism
     }
 
     /**
-     * Change the gender of the small fish.
+     * Change the gender of the animal.
      */
     protected void changeGender()
     {
@@ -55,6 +55,11 @@ public abstract class Animal extends Organism
     /**
      * Generate a number representing the number of births,
      * if it can breed.
+     * 
+     * @param breedingAge The age at which a small fish can start to breed.
+     * @param maxLitterSize The maximum number of births.
+     * @param pregnancyPeriod The minimun of steps before next pregnancy.
+     * @param impregnationProbability The likelihood of a small fish mating.
      * 
      * @return The number of births (may be zero).
      */
@@ -66,16 +71,15 @@ public abstract class Animal extends Organism
         if(canBreed(breedingAge) && getRandom().nextDouble() <= impregnationProbability) {
             litterSize = getRandom().nextInt(maxLitterSize) + 1;
             timeUntilImpregnation = pregnancyPeriod;
-            //giveBirth(newSmallFish, litterSize);
         }
         return litterSize;
     }
 
     /**
-     * A small fish can breed if it has reached the breeding age 
-     * and its pregnancy period is over.
+     * An animal can breed if it has reached its breeding age 
+     * and their pregnancy period is over.
      * 
-     * @return true if the small fish can breed, false otherwise.
+     * @return true if the animal can breed, false otherwise.
      */
     protected boolean canBreed(int breedingAge)
     {
@@ -85,7 +89,9 @@ public abstract class Animal extends Organism
     // Instance fields accessor methods.
 
     /**
+     * Return the food level of an animal.
      * 
+     * @return The food level of the animal
      */
     protected int getFoodLevel()
     {
@@ -93,7 +99,9 @@ public abstract class Animal extends Organism
     }
 
     /**
+     * Return the time before next impregnation.
      * 
+     * @return The remaining time before next impregnation.
      */
     protected int getTimeUntilImpregnation()
     {
@@ -101,9 +109,9 @@ public abstract class Animal extends Organism
     }
 
     /**
-     * Check if the small fish is a female. If false, it is a male.
+     * Accessor method for checking the animal's sex.
      * 
-     * @return true if the small fish is female, false otherwise.
+     * @return True if the animal is female, false otherwise.
      */
     protected boolean checkFemale()
     {

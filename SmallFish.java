@@ -29,8 +29,7 @@ public class SmallFish extends Animal
 
     /**
      * Create a new small fish. A small fish is created with age
-     * zero (a new born). The pregnancy period for females is set in. The gender is
-     * randomly decided.
+     * zero (a new born). The gender is randomly decided.
      * 
      * @param field The field currently occupied.
      * @param location The location within the field.
@@ -70,7 +69,7 @@ public class SmallFish extends Animal
      * The process of a small fish finding a mate of the same species
      * and of the opposite gender.
      *
-     * @param  newSmallFish  A list to return newly born rabbits.
+     * @param  newSmallFish  A list to return newly hatched small fish.
      */
     private void findMate(List<Organism> newSmallFish)
     {
@@ -94,7 +93,8 @@ public class SmallFish extends Animal
      * Check whether or not this small fish is to give birth at this step.
      * New births will be made into free adjacent locations.
      * 
-     * @param newSmallFish A list to return newly born rabbits.
+     * @param newSmallFish A list to return newly hatched small fish.
+     * @param litterSize 
      */
     private void giveBirth(List<Organism> newSmallFish, int litterSize)
     {
@@ -110,7 +110,9 @@ public class SmallFish extends Animal
     }
     
     /**
+     * Holds the generated number, representing the number of births.
      * 
+     * @return 
      */
     private int litterSize()
     {
