@@ -10,10 +10,10 @@ import java.util.Iterator;
 public abstract class Plant extends Organism
 {
     // Characteristics shared by all plants (instance fields).
-    
+
     //
     
-
+    
     /**
      * Create a new plant at a location in field.
      * 
@@ -23,6 +23,19 @@ public abstract class Plant extends Organism
     public Plant(Field field, Location location)
     {
         super(field, location);
-        
+        changeKingdom();
+    }
+
+    // Mutator methods, describing action or process.
+
+    /**
+     * An animal can breed if it has reached its breeding age 
+     * and their pregnancy period is over.
+     * 
+     * @return true if the animal can breed, false otherwise.
+     */
+    protected boolean canReproduce(int reproducingAge, double reproductionProbability)
+    {
+        return getAge() >= reproducingAge && getRandom().nextDouble() <= reproductionProbability;
     }
 }

@@ -21,7 +21,9 @@ public class Simulator
     // The probability that a fox will be created in any given grid position.
     private static final double FOX_CREATION_PROBABILITY = 0.02;
     // The probability that a rabbit will be created in any given grid position.
-    private static final double RABBIT_CREATION_PROBABILITY = 0.08;    
+    private static final double RABBIT_CREATION_PROBABILITY = 0.08;
+    //
+    private static final double SEAGRASS_CREATION_PROBABILITY = 0.03;
 
     // List of animals in the field.
     private List<Organism> organisms;
@@ -61,6 +63,7 @@ public class Simulator
         view = new SimulatorView(depth, width);
         view.setColor(SmallFish.class, Color.ORANGE);
         view.setColor(Shark.class, Color.BLUE);
+        view.setColor(Seagrass.class, Color.GREEN);
         
         // Setup a valid starting point.
         reset();
@@ -145,6 +148,11 @@ public class Simulator
                     Location location = new Location(row, col);
                     SmallFish smallFish = new SmallFish(field, location);
                     organisms.add(smallFish);
+                }
+                else if(rand.nextDouble() <= SEAGRASS_CREATION_PROBABILITY) {
+                    Location location = new Location(row, col);
+                    Seagrass seagrass = new Seagrass(field, location);
+                    organisms.add(seagrass);
                 }
                 // else leave the location empty.
             }

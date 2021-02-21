@@ -60,11 +60,12 @@ public class Shark extends Animal
         computeAge(AGE_OF_DECAY, RATE_OF_DECAY);
         decrementFoodLevel();
         if(isAlive()) {
+            //
             if(foundMate()){
                 giveBirth(newSmallSharks, litterSize());
             }          
             // Move towards a source of food if found.
-            Location newLocation = findFood();
+            Location newLocation = findFoodAnimal();
             if(newLocation == null) { 
                 // No food found - try to move to a free location.
                 newLocation = getField().freeAdjacentLocation(getLocation());

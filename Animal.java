@@ -68,7 +68,7 @@ public abstract class Animal extends Organism
      * 
      * @return Where food was found, or null if it wasn't.
      */
-    protected Location findFood()
+    protected Location findFoodAnimal()
     {
         Field field = getField();
         List<Location> adjacent = field.adjacentLocations(getLocation());
@@ -79,7 +79,7 @@ public abstract class Animal extends Organism
             if(organism != null){
                 if(dietContains(organism.toString())) {
                     Organism food = (Organism) organism;
-                    if(food.isAlive()) { 
+                    if(food.isAlive() && food.isAnimal()) { 
                         food.setDead();
                         incrementFoodLevel(food.getFoodValue());
                         return where;
@@ -90,6 +90,33 @@ public abstract class Animal extends Organism
         return null;
     }
 
+    /**
+     * Look for food source adjacent to the current location.
+     * Only the first live food source is eaten.
+     * 
+     * @return Where food was found, or null if it wasn't.
+     */
+    protected void findFoodPlant()
+    {
+        Field field = getField();
+        List<Location> adjacent = field.adjacentLocations(getLocation());
+        Iterator<Location> it = adjacent.iterator();
+        while(it.hasNext()) {
+            Location where = it.next();
+            Object organism = field.getObjectAt(where);
+            if(organism != null){
+                if(dietContains(organism.toString())) {
+                    Organism food = (Organism) organism;
+                    if(food.isAlive() && !food.isAnimal()) { 
+                        food.decrementVitality();
+                        incrementFoodLevel(food.getFoodValue());
+                        System.out.println("EATEN");
+                    }
+                }
+            }
+        }
+    }
+    
     /**
      * The process of an animal finding a mate of the same species
      * and of the opposite gender.

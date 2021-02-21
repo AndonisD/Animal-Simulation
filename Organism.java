@@ -23,10 +23,14 @@ public abstract class Organism
     private Location location;
     // Whether the organism is alive or not.
     private boolean alive;
+    //
+    private boolean isAnimal;
     // The name of the distinct species.
     private String speciesName;    
     // The organism's age.
     private int age;
+    //
+    private int vitality;
     // A set holding the food source for a specific species.
     private HashSet<String> diet;
     // The organism's food level.
@@ -49,8 +53,10 @@ public abstract class Organism
         this.field = field;
         setLocation(location);
         alive = true;
+        isAnimal = true;
         speciesName = "";
         age = 0;
+        vitality = 0;
         diet = new HashSet<>();
         foodLevel = 0;
         maxFoodLevel = 0;
@@ -109,6 +115,14 @@ public abstract class Organism
     {
         return alive;
     }
+    
+    /**
+     * 
+     */
+    protected boolean isAnimal()
+    {
+        return isAnimal;
+    }
 
     @Override
     /**
@@ -131,6 +145,14 @@ public abstract class Organism
         return age;
     }
 
+    /**
+     * 
+     */
+    protected int getVitality()
+    {
+        return vitality;
+    }
+    
     /**
      * Return the set holding the otganism's diet.
      * 
@@ -223,6 +245,14 @@ public abstract class Organism
     }
 
     /**
+     * 
+     */
+    protected void changeKingdom()
+    {
+        isAnimal = !isAnimal;
+    }
+    
+    /**
      *  Increments the age of an organism.
      */
     protected void incrementAge()
@@ -248,6 +278,23 @@ public abstract class Organism
         }
     }
 
+    /**
+     * 
+     */
+    protected void setVitality(int vitality)
+    {
+        this.vitality = vitality;
+    }
+    
+    /**
+     * 
+     */
+    protected void decrementVitality()
+    {
+        vitality--;
+        System.out.println("ONE DOWN");
+    }
+    
     /**
      * Set the String value in the species' name field.
      * 
