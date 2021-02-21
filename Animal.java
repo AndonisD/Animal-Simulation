@@ -2,20 +2,19 @@ import java.util.List;
 import java.util.Iterator;
 
 /**
- * A class representing shared characteristics of animals.
+ * An abstract class representing shared characteristics of animals.
  * 
  * @author David J. Barnes, Michael Kölling, Ivan Arabadzhiev and Adonis Daskalopulos
  * @version 2021.03.03
  */
 public abstract class Animal extends Organism
 {
-    //Characteristics shared by all animals (instance fields).
+    // Characteristics shared by all animals (instance fields).
 
-    // The steps left before next impregnation.
-    private int timeUntilImpregnation;
     // The gender of an animal.
     private boolean isFemale;
-
+    // The steps left before next impregnation.
+    private int timeUntilImpregnation;
 
     /**
      * Create a new female animal at location in field.
@@ -29,6 +28,30 @@ public abstract class Animal extends Organism
         isFemale = true;
     }
 
+    // Instance fields accessor methods.
+
+    /**
+     * Return the time before next impregnation.
+     * 
+     * @return The remaining time before next impregnation.
+     */
+    protected int getTimeUntilImpregnation()
+    {
+        return timeUntilImpregnation;
+    }
+
+    /**
+     * Return boolean value depending on the animal's sex.
+     * 
+     * @return True if the animal is female, false otherwise.
+     */
+    protected boolean checkFemale()
+    {
+        return isFemale;
+    }
+    
+    // Instance fields mutator methods.
+    
     /**
      * Change the gender of the animal.
      */
@@ -37,9 +60,11 @@ public abstract class Animal extends Organism
         isFemale = !isFemale;
     }
 
+    // Mutator methods, describing action or process.
+    
     /**
-     * Look for rabbits adjacent to the current location.
-     * Only the first live rabbit is eaten.
+     * Look for food source adjacent to the current location.
+     * Only the first live food source is eaten.
      * 
      * @return Where food was found, or null if it wasn't.
      */
@@ -66,10 +91,8 @@ public abstract class Animal extends Organism
     }
 
     /**
-     * The process of a small fish finding a mate of the same species
+     * The process of an animal finding a mate of the same species
      * and of the opposite gender.
-     *
-     * @param  newSmallFish  A list to return newly hatched small fish.
      */
     protected boolean foundMate()
     {
@@ -104,7 +127,7 @@ public abstract class Animal extends Organism
      * @return The number of births (may be zero).
      */
     protected int impregnate(int breedingAge, int maxLitterSize, 
-    int pregnancyPeriod, double impregnationProbability)
+                             int pregnancyPeriod, double impregnationProbability)
     {
         int litterSize = 0;
         timeUntilImpregnation--;
@@ -124,27 +147,5 @@ public abstract class Animal extends Organism
     protected boolean canBreed(int breedingAge)
     {
         return getAge() >= breedingAge && timeUntilImpregnation <= 0;
-    }
-
-    // Instance fields accessor methods.
-
-    /**
-     * Return the time before next impregnation.
-     * 
-     * @return The remaining time before next impregnation.
-     */
-    protected int getTimeUntilImpregnation()
-    {
-        return timeUntilImpregnation;
-    }
-
-    /**
-     * Accessor method for checking the animal's sex.
-     * 
-     * @return True if the animal is female, false otherwise.
-     */
-    protected boolean checkFemale()
-    {
-        return isFemale;
     }
 }

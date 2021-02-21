@@ -60,7 +60,7 @@ public class Simulator
         // Create a view of the state of each location in the field.
         view = new SimulatorView(depth, width);
         view.setColor(SmallFish.class, Color.ORANGE);
-        view.setColor(Fox.class, Color.BLUE);
+        view.setColor(Shark.class, Color.BLUE);
         
         // Setup a valid starting point.
         reset();
@@ -138,13 +138,13 @@ public class Simulator
             for(int col = 0; col < field.getWidth(); col++) {
                 if(rand.nextDouble() <= FOX_CREATION_PROBABILITY) {
                     Location location = new Location(row, col);
-                    Fox fox = new Fox(field, location);
-                    organisms.add(fox);
+                    Shark shark = new Shark(field, location);
+                    organisms.add(shark);
                 }
                 else if(rand.nextDouble() <= RABBIT_CREATION_PROBABILITY) {
                     Location location = new Location(row, col);
-                    SmallFish rabbit = new SmallFish(field, location);
-                    organisms.add(rabbit);
+                    SmallFish smallFish = new SmallFish(field, location);
+                    organisms.add(smallFish);
                 }
                 // else leave the location empty.
             }

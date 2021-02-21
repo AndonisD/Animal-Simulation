@@ -3,19 +3,19 @@ import java.util.Random;
 import java.util.HashSet;
 
 /**
- * A class representing shared characteristics of organisms.
+ * An abstract class representing shared characteristics of organisms.
  *
  * @author David J. Barnes, Michael Kölling, Ivan Arabadzhiev and Adonis Daskalopulos
  * @version 2021.03.03
  */
 public abstract class Organism
 {
-    //Characteristics shared by all organisms (class variables).
+    // Characteristics shared by all organisms (class variables).
 
     // A shared random number generator to control breeding.
     private static final Random rand = Randomizer.getRandom();
 
-    //Characteristics shared by all organisms (instance fields).
+    // Characteristics shared by all organisms (instance fields).
 
     // The organism's field.
     private Field field;
@@ -23,23 +23,23 @@ public abstract class Organism
     private Location location;
     // Whether the organism is alive or not.
     private boolean alive;
+    // The name of the distinct species.
+    private String speciesName;    
     // The organism's age.
     private int age;
+    // A set holding the food source for a specific species.
+    private HashSet<String> diet;
+    // The organism's food level.
+    private int foodLevel;
+    // The organism's maximum food level.
+    private int maxFoodLevel;
+    // The organism's worth as a food source.
+    private int foodValue;
     // The probability of a organism dying.
     private double deathProbability;
-    // The animal's food level, which is increased by feeding from its food source.
-    private int foodLevel;
-    
-    private int maxFoodLevel;
-    
-    private int foodValue;
-
-    private String speciesName;
-    
-    private HashSet<String> diet;
 
     /**
-     * Create a new organism at location in field.
+     * Create a new organism at location in field with specific traits.
      * 
      * @param field The field currently occupied.
      * @param location The location within the field.
@@ -49,13 +49,13 @@ public abstract class Organism
         this.field = field;
         setLocation(location);
         alive = true;
+        speciesName = "";
         age = 0;
-        deathProbability = 0.0;
+        diet = new HashSet<>();
         foodLevel = 0;
         maxFoodLevel = 0;
-        speciesName = "";
         foodValue = 0;
-        diet = new HashSet<>();
+        deathProbability = 0.0;
     }
 
     /**
@@ -66,14 +66,146 @@ public abstract class Organism
      */
     abstract public void act(List<Organism> newOrganisms);
 
+    // Class variables accessor methods.
+
+    /**
+     * Return the random number for breeding control.
+     * 
+     * @return The random number for breeding control.
+     */
+    protected Random getRandom()
+    {
+        return rand;
+    }
+
+    // Instance fields accessor methods.
+
+    /**
+     * Return the organism's field.
+     * 
+     * @return The organism's field.
+     */
+    protected Field getField()
+    {
+        return field;
+    }
+
+    /**
+     * Return the organism's location.
+     * 
+     * @return The organism's location.
+     */
+    protected Location getLocation()
+    {
+        return location;
+    }
+
     /**
      * Check whether the organism is alive or not.
      * 
-     * @return true if the organism is still alive, false otherwise.
+     * @return True if the organism is still alive, False otherwise.
      */
     protected boolean isAlive()
     {
         return alive;
+    }
+
+    @Override
+    /**
+     * Return the object - organism as a String.
+     * 
+     * @return A String of the organism object.
+     */
+    public String toString()
+    {
+        return speciesName;
+    }
+
+    /**
+     * Return the age of the organism.
+     * 
+     * @return The age of the organism.
+     */
+    protected int getAge()
+    {
+        return age;
+    }
+
+    /**
+     * Return the set holding the otganism's diet.
+     * 
+     * @return The set holding the otganism's diet.
+     */
+    protected HashSet<String> getDiet()
+    {
+        return diet;
+    }
+
+    /**
+     * Return a boolean value depening whether or not this food source
+     * is in the diet set or not.
+     * 
+     * @return True if the food source is in the set, False otherwise.
+     */
+    protected boolean dietContains(String foodName)
+    {
+        return diet.contains(foodName);
+    }
+
+    /**
+     * Return the food level of an organism.
+     * 
+     * @return The food level of the organism.
+     */
+    protected int getFoodLevel()
+    {
+        return foodLevel;
+    }
+
+    /**
+     * Return the maximum food level of an organism.
+     * 
+     * @return The maximum food level of the organism.
+     */
+    protected int getMaxFoodLevel()
+    {
+        return maxFoodLevel;
+    }
+
+    /**
+     * Return the food value of the organism.
+     * 
+     * @return The food value of the organism.
+     */
+    protected int getFoodValue()
+    {
+        return foodValue;
+    }
+
+    /**
+     * Return the death probability of the organism.
+     * 
+     * @return The death probablity of the organism.
+     */
+    protected double getDeathProbability()
+    {
+        return deathProbability;
+    }
+
+    // Instance fields mutator methods.
+
+    /**
+     * Place the organism at the new location in the given field.
+     * 
+     * @param newLocation The organism's new location.
+     */
+    protected void setLocation(Location newLocation)
+    {
+        if(location != null) {
+            field.clear(location);
+        }
+        location = newLocation;
+        field.place(this, newLocation);
     }
 
     /**
@@ -91,151 +223,23 @@ public abstract class Organism
     }
 
     /**
-     * Return the organism's location.
-     * 
-     * @return The organism's location.
-     */
-    protected Location getLocation()
-    {
-        return location;
-    }
-
-    /**
-     * Place the organism at the new location in the given field.
-     * 
-     * @param newLocation The organism's new location.
-     */
-    protected void setLocation(Location newLocation)
-    {
-        if(location != null) {
-            field.clear(location);
-        }
-        location = newLocation;
-        field.place(this, newLocation);
-    }
-
-    /**
-     * Return the organism's field.
-     * 
-     * @return The organism's field.
-     */
-    protected Field getField()
-    {
-        return field;
-    }
-
-    // Class variables accessor methods.
-
-    /**
-     * Return the random number for breeding control.
-     * 
-     * @return The random number for breeding control.
-     */
-    protected Random getRandom()
-    {
-        return rand;
-    }
-
-    // Instance fields accessor methods.
-
-    /**
-     * Return the age of the organism.
-     * 
-     * @return The age of the organism.
-     */
-    protected int getAge()
-    {
-        return age;
-    }
-
-    /**
-     * Return the death probability of the organism.
-     * 
-     * @return The death probablity of the organism.
-     */
-    protected double getDeathProbability()
-    {
-        return deathProbability;
-    }
-
-    /**
-     * Return the food level of an animal.
-     * 
-     * @return The food level of the animal
-     */
-    protected int getFoodLevel()
-    {
-        return foodLevel;
-    }
-    
-    /**
-     * Return the food level of an animal.
-     * 
-     * @return The food level of the animal
-     */
-    protected int getMaxFoodLevel()
-    {
-        return maxFoodLevel;
-    }
-    
-    @Override
-    /**
-     * Return the food level of an animal.
-     * 
-     * @return The food level of the animal
-     */
-    public String toString()
-    {
-        return speciesName;
-    }
-    
-    /**
-     * Return the food level of an animal.
-     * 
-     * @return The food level of the animal
-     */
-    protected int getFoodValue()
-    {
-        return foodValue;
-    }
-    
-    /**
-     * Ivan's comment :)
-     * 
-     * @return The food level of the animal
-     */
-    protected HashSet<String> getDiet()
-    {
-        return diet;
-    }
-    
-    /**
-     * Ivan's comment :)
-     * 
-     * @return The food level of the animal
-     */
-    protected boolean dietContains(String foodName)
-    {
-        return diet.contains(foodName);
-    }
-
-    // Instance fields mutator methods.
-
-    /**
      *  Increments the age of an organism.
      */
-    protected void computeAge()
+    protected void incrementAge()
     {
         age++;
     }
 
     /**
-     * Increase the age.
-     * This could result in the animal's death, depending on its age.
+     * Computes the age.
+     * This could result in the organism's death, depending on its age.
+     * 
+     * @param ageOfDecay The age at which an ogranism starts to have a chance of dying.
+     * @param rateOfDecay The rate of change of death probability.
      */
-    protected void incrementAge(int ageOfDecay, double rateOfDecay)
+    protected void computeAge(int ageOfDecay, double rateOfDecay)
     {
-        computeAge();
+        incrementAge();
         if(getAge() > ageOfDecay) {
             computeDeathProbability(rateOfDecay);
             if(getRandom().nextDouble() <= getDeathProbability()) {
@@ -245,15 +249,43 @@ public abstract class Organism
     }
 
     /**
-     *  Computes the death probablity of an organism.
+     * Set the String value in the species' name field.
+     * 
+     * @param speciesName The name of the species.
      */
-    protected void computeDeathProbability(double rateOfDecay)
+    protected void setSpeciesName(String speciesName)
     {
-        deathProbability = deathProbability + rateOfDecay;
+        this.speciesName = speciesName;
     }
 
     /**
-     *  Computes the death probablity of an organism.
+     * Add a food source to the set of diet of an ogranism.
+     * 
+     * @param food The food that an ogranism can consume.
+     */
+    protected void addDiet(String... food)
+    {
+        for(String foodName : food){
+            diet.add(foodName);
+        }
+    }
+
+    /**
+     * Remove a food source from the set of diet of an ogranism.
+     * 
+     * @ param foodName The food that is to be removed.
+     */
+    protected void removeFromDiet(String foodName)
+    {
+        diet.remove(foodName);
+    }
+
+    /**
+     *  Upon feeding on a food source the organism's food level is increased,
+     *  if the food level exceeds the maximum food level it is set to the 
+     *  maximum food level.
+     *  
+     *  @param foodValue The organism's worth as a food source.
      */
     protected void incrementFoodLevel(int foodValue)
     {
@@ -264,11 +296,11 @@ public abstract class Organism
         else{
             foodLevel = newFoodLevel;
         }
-        
     }
 
     /**
-     * Make this fox more hungry. This could result in the fox's death.
+     * Upon "acting" the food level of an ogranism decreases, this may result in
+     * the organism's death.
      */
     protected void decrementFoodLevel()
     {
@@ -277,46 +309,34 @@ public abstract class Organism
             setDead();
         }
     }
-    
+
     /**
-     *  Computes the death probablity of an organism.
+     *  Set the value to the max food level field.
+     *  
+     *  @param maxFoodLevel The organism's food level.
      */
-    protected void setMaxFoodLevel(int foodLevel)
+    protected void setMaxFoodLevel(int maxFoodLevel)
     {
-        this.maxFoodLevel = foodLevel;
+        this.maxFoodLevel = maxFoodLevel;
     }
 
     /**
-     * Make this fox more hungry. This could result in the fox's death.
-     */
-    protected void setSpeciesName(String speciesName)
-    {
-        this.speciesName = speciesName;
-    }
-    
-    /**
-     * Make this fox more hungry. This could result in the fox's death.
+     * Set the value to the food value field.
+     * 
+     * @param foodValue The organism's worth as a food source.
      */
     protected void setFoodValue(int foodValue)
     {
         this.foodValue = foodValue;
     }
-    
+
     /**
-     * Make this fox more hungry. This could result in the fox's death.
+     *  Compute the death probability.
+     *  
+     *  @param rateOfDecay The rate of change of death probability.
      */
-    protected void addDiet(String... food)
+    protected void computeDeathProbability(double rateOfDecay)
     {
-        for(String foodName : food){
-            diet.add(foodName);
-        }
-    }
-    
-    /**
-     * Make this fox more hungry. This could result in the fox's death.
-     */
-    protected void removeFromDiet(String foodName)
-    {
-        diet.remove(foodName);
+        deathProbability = deathProbability + rateOfDecay;
     }
 }

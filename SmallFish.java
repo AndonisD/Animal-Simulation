@@ -1,9 +1,8 @@
 import java.util.List;
 
-
 /**
  * A simple model of a small fish.
- * Small fish age, move, feed, breed, and die.
+ * Small fish age, move, feed, mate, breed, and die.
  * 
  * @author David J. Barnes, Michael Kölling, Ivan Arabadzhiev, Adonis Daskalopulos
  * @version 2021.03.03
@@ -12,22 +11,22 @@ public class SmallFish extends Animal
 {
     // Characteristics shared by all small fish (class variables).
 
-    // The age at which a small fish can start to breed.
-    private static final int BREEDING_AGE = 5;
     // The age at which a small fish starts to have a chance of dying of age.
     private static final int AGE_OF_DECAY = 30;
     // The rate of change of death probability.
     private static final double RATE_OF_DECAY = 0.1;
-    // The likelihood of a small fish mating.
-    private static final double IMPREGNATION_PROBABILITY = 0.12;
-    // The minimun of steps before next pregnancy.
-    private static final int PREGNANCY_PERIOD = 1;
-    // The maximum number of births.
-    private static final int MAX_LITTER_SIZE = 4;
+    // The small fish' worth as a food source.
+    private static final int FOOD_VALUE = 9;
+    // The age at which a small fish can start to breed.
+    private static final int BREEDING_AGE = 5;
     // The probability of a female meeting a male.
     private static final double MALE_TO_FEMALE_RATIO = 0.5;
-    
-    private static final int FOOD_VALUE = 9;
+    // The likelihood of small fish mating.
+    private static final double IMPREGNATION_PROBABILITY = 0.12;
+    // The maximum number of births.
+    private static final int MAX_LITTER_SIZE = 4;
+    // The minimun of steps before next pregnancy.
+    private static final int PREGNANCY_PERIOD = 1;
 
     /**
      * Create a new small fish. A small fish is created with age
@@ -39,22 +38,22 @@ public class SmallFish extends Animal
     public SmallFish(Field field, Location location)
     {
         super(field, location);
+        setSpeciesName("SmallFish");
         if(getRandom().nextDouble() <= MALE_TO_FEMALE_RATIO){
             changeGender();
         }
-        setSpeciesName("SmallFish");
         setFoodValue(FOOD_VALUE);
     }   
 
     /**
      * This is what the small fish does most of the time - it swims 
-     * around. It will search for a mate, breed or die of old age.
+     * around and eat. It will search for a mate, breed or die of old age.
      * 
      * @param newSmallFish A list to return newly hatched small fish.
      */
     public void act(List<Organism> newSmallFish)
     {
-        incrementAge(AGE_OF_DECAY, RATE_OF_DECAY);
+        computeAge(AGE_OF_DECAY, RATE_OF_DECAY);
         if(isAlive()) {
             if(foundMate()){
                 giveBirth(newSmallFish, litterSize());
@@ -76,7 +75,7 @@ public class SmallFish extends Animal
      * New births will be made into free adjacent locations.
      * 
      * @param newSmallFish A list to return newly hatched small fish.
-     * @param litterSize 
+     * @param litterSize The number of births.
      */
     private void giveBirth(List<Organism> newSmallFish, int litterSize)
     {
@@ -90,11 +89,11 @@ public class SmallFish extends Animal
             newSmallFish.add(young);
         }
     }
-    
+
     /**
-     * Holds the generated number, representing the number of births.
+     * Return the generated number, representing the number of births.
      * 
-     * @return 
+     * @return A number representing the number of births.
      */
     private int litterSize()
     {
