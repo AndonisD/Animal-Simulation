@@ -10,9 +10,9 @@ import java.util.Iterator;
 public abstract class Animal extends Organism
 {
     // Characteristics shared by all animals (class variables).
-    private static final double INFECTION_PROBABILITY = 0.01;
+    private static final double INFECTION_PROBABILITY = 0.001;
 
-    private static final double SPREADING_PROBABILITY = 0.1;
+    private static final double SPREADING_PROBABILITY = 0.01;
 
     // Characteristics shared by all animals (instance fields).    
 
@@ -200,4 +200,6 @@ public abstract class Animal extends Organism
             }
         }
     }
+    
+    abstract protected void giveBirth(List<Organism> newSmallFish, int litterSize);
 }

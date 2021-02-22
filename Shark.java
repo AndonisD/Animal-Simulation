@@ -89,7 +89,7 @@ public class Shark extends Animal
      * 
      * @param newSmallSharks A list to return newly born sharks.
      */
-    private void giveBirth(List<Organism> newSmallSharks, int litterSize)
+    protected void giveBirth(List<Organism> newSmallSharks, int litterSize)
     {
         // New sharks are born into adjacent locations.
         // Get a list of adjacent free locations.

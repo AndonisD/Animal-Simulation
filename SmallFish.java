@@ -61,6 +61,7 @@ public class SmallFish extends Animal
     public void act(List<Organism> newSmallFish)
     {
         computeAge();
+        
         if(isAlive()) {
             // Try to reproduce.
             if(foundMate()){
@@ -70,8 +71,8 @@ public class SmallFish extends Animal
             findFoodPlant();
             //
             if(checkInfected()){
-                spreadInfection();
-                
+             spreadInfection();
+             
             }
             // Try to move into a free location.
             Location newLocation = getField().freeAdjacentLocation(getLocation());
@@ -92,7 +93,7 @@ public class SmallFish extends Animal
      * @param newSmallFish A list to return newly hatched small fish.
      * @param litterSize The number of births.
      */
-    private void giveBirth(List<Organism> newSmallFish, int litterSize)
+    protected void giveBirth(List<Organism> newSmallFish, int litterSize)
     {
         // New small fish are born into adjacent locations.
         // Get a list of adjacent free locations.

@@ -47,4 +47,6 @@ public abstract class Plant extends Organism
     protected void spreadInfection()
     {
     }
+    
+    abstract protected void reproduce(List<Organism> newSeagrass);
 }

@@ -470,9 +470,7 @@ public abstract class Organism
             return true;
         }
         else if(testProbability(infectionProbability)){
-            //infect();
-            isInfected = true;
-            System.out.println("randomly infected");
+            infect();
             return true;
         }
         return false;
@@ -490,8 +488,12 @@ public abstract class Organism
     
     public void infect()
     {
-        isInfected = true;
-        System.out.println("got infected");
+        if(!isInfected){
+            isInfected = true;
+            //doubles the rate of decay
+            rateOfDecay = rateOfDecay * 2; 
+            
+        }
     }
     
     /**

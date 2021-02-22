@@ -70,7 +70,7 @@ public class Seagrass extends Plant
     protected void reproduce(List<Organism> newSeagrass)
     {
         Field field = getField();
-        Location newLocation = field.freeAdjacentLocation(getLocation());
+        Location newLocation = field.freeAdjacentLocation(getLocation(), 4);
         if(newLocation != null){
             Seagrass young = new Seagrass(field, newLocation);
             newSeagrass.add(young);
