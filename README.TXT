@@ -41,6 +41,6 @@ Name - Ivan Lyubomirov Arabadzhiev                   Faculty of Natural & Mathem
 Student Number - 20011632                            Department of Informatics
 K Number - k20011632                                 Computer Science(BSc) - 1 year
 
-Name -                                               Faculty of Natural & Mathematical Sciences
-Student Number -                                     Department of Informatics
-K Number                                             Computer Science(BSc) - 1 year
+Name - Andonis Daskalopulos                          Faculty of Natural & Mathematical Sciences
+Student Number - 20081903                            Department of Informatics
+K Number - k20081903                                 Computer Science(BSc) - 1 year

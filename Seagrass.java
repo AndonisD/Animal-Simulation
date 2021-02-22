@@ -33,6 +33,8 @@ public class Seagrass extends Plant
     public Seagrass(Field field, Location location)
     {
         super(field, location);
+        setAgeOfDecay(AGE_OF_DECAY);
+        setRateOfDecay(RATE_OF_DECAY);
         setSpeciesName("Seagrass");
         setVitality(INITIAL_VITALITY);
         setFoodValue(FOOD_VALUE);
@@ -46,7 +48,7 @@ public class Seagrass extends Plant
      */
     public void act(List<Organism> newSeagrass)
     {
-        computeAge(AGE_OF_DECAY, RATE_OF_DECAY);
+        computeAge();
         if(isAlive()) {
             //
             if(canReproduce(REPRODUCTION_AGE, RERODUCTION_PROBABILITY)){

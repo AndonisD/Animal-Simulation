@@ -9,7 +9,12 @@ import java.util.Iterator;
  */
 public abstract class Animal extends Organism
 {
-    // Characteristics shared by all animals (instance fields).
+    // Characteristics shared by all animals (class variables).
+    private static final double INFECTION_PROBABILITY = 0.01;
+
+    private static final double SPREADING_PROBABILITY = 0.1;
+
+    // Characteristics shared by all animals (instance fields).    
 
     // The gender of an animal.
     private boolean isFemale;
@@ -26,6 +31,8 @@ public abstract class Animal extends Organism
     {
         super(field, location);
         isFemale = true;
+        setInfectionProbability(INFECTION_PROBABILITY);
+        setSpreadingProbability(SPREADING_PROBABILITY);
     }
 
     // Instance fields accessor methods.
@@ -49,9 +56,9 @@ public abstract class Animal extends Organism
     {
         return isFemale;
     }
-    
+
     // Instance fields mutator methods.
-    
+
     /**
      * Change the gender of the animal.
      */
@@ -61,7 +68,7 @@ public abstract class Animal extends Organism
     }
 
     // Mutator methods, describing action or process.
-    
+
     /**
      * Look for food source adjacent to the current location.
      * Only the first live food source is eaten.
@@ -113,7 +120,7 @@ public abstract class Animal extends Organism
             }
         }
     }
-    
+
     /**
      * The process of an animal finding a mate of the same species
      * and of the opposite gender.
@@ -153,7 +160,7 @@ public abstract class Animal extends Organism
      * @return The number of births (may be zero).
      */
     protected int impregnate(int breedingAge, int maxLitterSize, 
-                             int pregnancyPeriod, double impregnationProbability)
+    int pregnancyPeriod, double impregnationProbability)
     {
         int litterSize = 0;
         timeUntilImpregnation--;
@@ -175,5 +182,22 @@ public abstract class Animal extends Organism
     protected boolean canBreed(int breedingAge)
     {
         return getAge() >= breedingAge && timeUntilImpregnation <= 0;
+    }
+
+    protected void spreadInfection(){
+        Field field = getField();
+        List<Location> adjacent = field.adjacentLocations(getLocation());
+        Iterator<Location> it = adjacent.iterator();
+        while(it.hasNext()) {
+            Location where = it.next();
+            Object organism = field.getObjectAt(where);
+            if(organism != null){
+                Organism animal = (Organism) organism;
+                if(animal.isAlive() && animal.isAnimal()) { 
+                    animal.infect();
+                    System.out.println("spreading");
+                }
+            }
+        }
     }
 }

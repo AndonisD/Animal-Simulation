@@ -44,6 +44,8 @@ public class SmallFish extends Animal
         if(getRandom().nextDouble() <= MALE_TO_FEMALE_RATIO){
             changeGender();
         }
+        setAgeOfDecay(AGE_OF_DECAY);
+        setRateOfDecay(RATE_OF_DECAY);
         setMaxFoodLevel(MAX_FOOD_LEVEL);
         setFoodValue(FOOD_VALUE);
         incrementFoodLevel(getMaxFoodLevel());
@@ -58,7 +60,7 @@ public class SmallFish extends Animal
      */
     public void act(List<Organism> newSmallFish)
     {
-        computeAge(AGE_OF_DECAY, RATE_OF_DECAY);
+        computeAge();
         if(isAlive()) {
             // Try to reproduce.
             if(foundMate()){
@@ -66,6 +68,11 @@ public class SmallFish extends Animal
             }
             // Try to find one of its food sources.
             findFoodPlant();
+            //
+            if(checkInfected()){
+                spreadInfection();
+                
+            }
             // Try to move into a free location.
             Location newLocation = getField().freeAdjacentLocation(getLocation());
             if(newLocation != null) {

@@ -9,6 +9,11 @@ import java.util.Iterator;
  */
 public abstract class Plant extends Organism
 {
+    //
+    private static final double INFECTION_PROBABILITY = 0.01;
+    //
+    private static final double SPREADING_PROBABILITY = 0.1;
+    
     /**
      * Create a new plant at a location in field.
      * 
@@ -19,6 +24,8 @@ public abstract class Plant extends Organism
     {
         super(field, location);
         changeKingdom();
+        setInfectionProbability(INFECTION_PROBABILITY);
+        setSpreadingProbability(SPREADING_PROBABILITY);
     }
 
     // Mutator methods, describing action or process.
@@ -35,5 +42,9 @@ public abstract class Plant extends Organism
     protected boolean canReproduce(int reproductionAge, double reproductionProbability)
     {
         return getAge() >= reproductionAge && getRandom().nextDouble() <= reproductionProbability;
+    }
+    
+    protected void spreadInfection()
+    {
     }
 }

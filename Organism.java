@@ -29,6 +29,10 @@ public abstract class Organism
     private String speciesName;    
     // The organism's age.
     private int age;
+    //
+    private int ageOfDecay;
+    //
+    private double rateOfDecay;
     // The ability to undertake an action.
     private int vitality;
     // A set holding the food sources for a specific species.
@@ -41,7 +45,13 @@ public abstract class Organism
     private int foodValue;
     // The probability of a organism dying.
     private double deathProbability;
-
+    //
+    private boolean isInfected;
+    
+    private double infectionProbability;
+    
+    private double spreadingProbability;
+    
     /**
      * Create a new organism at location in field with specific traits.
      * 
@@ -62,6 +72,9 @@ public abstract class Organism
         maxFoodLevel = 0;
         foodValue = 0;
         deathProbability = 0.0;
+        isInfected = false;
+        infectionProbability = 0.0;
+        spreadingProbability = 0.0;
     }
 
     /**
@@ -217,6 +230,46 @@ public abstract class Organism
     {
         return deathProbability;
     }
+    
+    protected boolean isInfected()
+    {
+        return isInfected;
+    }
+    
+    /**
+     * Return the death probability of the organism.
+     * 
+     * @return The death probablity of the organism.
+     */
+    protected double getInfectionProbability()
+    {
+        return infectionProbability;
+    }
+    
+    /**
+     * Return the death probability of the organism.
+     * 
+     * @return The death probablity of the organism.
+     */
+    protected int getAgeOfDecay()
+    {
+        return ageOfDecay;
+    }
+    
+    /**
+     * Return the death probability of the organism.
+     * 
+     * @return The death probablity of the organism.
+     */
+    protected double getRateOfDecay()
+    {
+        return rateOfDecay;
+    }
+    
+    protected double getSpreadingProbability()
+    {
+        return spreadingProbability;
+    }
 
     // Instance fields mutator methods.
 
@@ -279,7 +332,7 @@ public abstract class Organism
      * @param ageOfDecay The age at which an ogranism starts to have a chance of dying.
      * @param rateOfDecay The rate of change of death probability.
      */
-    protected void computeAge(int ageOfDecay, double rateOfDecay)
+    protected void computeAge()
     {
         incrementAge();
         if(getAge() > ageOfDecay) {
@@ -399,4 +452,87 @@ public abstract class Organism
     {
         deathProbability = deathProbability + rateOfDecay;
     }
+    
+    /**
+     *  
+     */
+    protected void changeInfected()
+    {
+        isInfected = !isInfected;
+    }
+    
+    /**
+     *  
+     */
+    protected boolean checkInfected()
+    {
+        if(isInfected){
+            return true;
+        }
+        else if(testProbability(infectionProbability)){
+            //infect();
+            isInfected = true;
+            System.out.println("randomly infected");
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Set the value to the food value field.
+     * 
+     * @param foodValue The organism's worth as a food source.
+     */
+    protected void setInfectionProbability(double infectionProbability)
+    {
+        this.infectionProbability = infectionProbability;
+    }
+    
+    public void infect()
+    {
+        isInfected = true;
+        System.out.println("got infected");
+    }
+    
+    /**
+     * Set the value to the food value field.
+     * 
+     * @param foodValue The organism's worth as a food source.
+     */
+    protected void setAgeOfDecay(int ageOfDecay)
+    {
+        this.ageOfDecay = ageOfDecay;
+    }
+    
+    /**
+     * Set the value to the food value field.
+     * 
+     * @param foodValue The organism's worth as a food source.
+     */
+    protected void setRateOfDecay(double rateOfDecay)
+    {
+        this.rateOfDecay = rateOfDecay;
+    }
+    
+    /**
+     * Set the value to the food value field.
+     * 
+     * @param foodValue The organism's worth as a food source.
+     */
+    protected void setSpreadingProbability(double spreadingProbability)
+    {
+        this.spreadingProbability = spreadingProbability;
+    }
+
+    protected boolean testProbability(double probability)
+    {
+        return getRandom().nextDouble() <= probability;
+    }
+    
+    //
+    
+    abstract protected void spreadInfection();
+    
+    
+    
 }

@@ -38,6 +38,8 @@ public class Shark extends Animal
     public Shark(Field field, Location location)
     {
         super(field, location);
+        setAgeOfDecay(AGE_OF_DECAY);
+        setRateOfDecay(RATE_OF_DECAY);
         setSpeciesName("Shark");
         if(getRandom().nextDouble() <= MALE_TO_FEMALE_RATIO){
             changeGender();
@@ -57,7 +59,7 @@ public class Shark extends Animal
      */
     public void act(List<Organism> newSmallSharks)
     {
-        computeAge(AGE_OF_DECAY, RATE_OF_DECAY);
+        computeAge();
         decrementFoodLevel();
         if(isAlive()) {
             // Try to reproduce.
