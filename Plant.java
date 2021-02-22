@@ -9,11 +9,6 @@ import java.util.Iterator;
  */
 public abstract class Plant extends Organism
 {
-    // Characteristics shared by all plants (instance fields).
-
-    //
-    
-    
     /**
      * Create a new plant at a location in field.
      * 
@@ -29,13 +24,16 @@ public abstract class Plant extends Organism
     // Mutator methods, describing action or process.
 
     /**
-     * An animal can breed if it has reached its breeding age 
-     * and their pregnancy period is over.
+     * A plant can reproduce if it has reached its reproducing age 
+     * and their reproduction probability allows it.
+     * 
+     * @param reproductionAge The minimum age at which a plant can start reproducing.
+     * @param reproductionProbability The probability of a plant reproducing.
      * 
      * @return true if the animal can breed, false otherwise.
      */
-    protected boolean canReproduce(int reproducingAge, double reproductionProbability)
+    protected boolean canReproduce(int reproductionAge, double reproductionProbability)
     {
-        return getAge() >= reproducingAge && getRandom().nextDouble() <= reproductionProbability;
+        return getAge() >= reproductionAge && getRandom().nextDouble() <= reproductionProbability;
     }
 }

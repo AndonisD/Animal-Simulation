@@ -22,7 +22,7 @@ public class Shark extends Animal
     // The probability of a female meeting a male.
     private static final double MALE_TO_FEMALE_RATIO = 0.5;
     // The likelihood of sharks mating.
-    private static final double IMPREGNATION_PROBABILITY = 0.2;  //0.08
+    private static final double IMPREGNATION_PROBABILITY = 0.2;
     // The maximum number of births.
     private static final int MAX_LITTER_SIZE = 2;
     // The minimun of steps before next pregnancy.
@@ -60,7 +60,7 @@ public class Shark extends Animal
         computeAge(AGE_OF_DECAY, RATE_OF_DECAY);
         decrementFoodLevel();
         if(isAlive()) {
-            //
+            // Try to reproduce.
             if(foundMate()){
                 giveBirth(newSmallSharks, litterSize());
             }          

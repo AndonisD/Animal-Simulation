@@ -1,30 +1,34 @@
 import java.util.List;
 
 /**
- * Write a description of class Algae here.
+ * A simple model of a seagrass.
+ * Seagrass can age, reproduce and die.
  *
- * @author (your name)
- * @version (a version number or a date)
+ * @author Ivan Arabadzhiev, Adonis Daskalopulos
+ * @version 2021.03.03
  */
 public class Seagrass extends Plant
 {
     // Characteristics shared by all small fish (class variables).
 
-    // The age at which a small fish starts to have a chance of dying of age.
-    private static final int AGE_OF_DECAY = 30;
-    //
-    private static final int AGE_OF_REPRODUCTION = 1;
-    //
+    // The ability of a seagrass to undertake a specific action.
     private static final int INITIAL_VITALITY = 3;
-    // The small fish' worth as a food source.
-    private static final int FOOD_VALUE = 4;
-    //
-    private static final double RERODUCTION_PROBABILITY = 0.06;
+    // The age at which a seagrass starts to have a chance of dying of age.
+    private static final int AGE_OF_DECAY = 30;
     // The rate of change of death probability.
     private static final double RATE_OF_DECAY = 0.1;
+    // The seagrass' worth as a food source.
+    private static final int FOOD_VALUE = 4;
+    // The age at which a seagrass starts to have a chance of reproducing.
+    private static final int REPRODUCTION_AGE = 1;
+    // The probability of a seagrass reproducing.
+    private static final double RERODUCTION_PROBABILITY = 0.06;
 
     /**
+     * Create a new seagrass. A seagrass is created with age of zero.
      * 
+     * @param field The field currently occupied.
+     * @param location The location within the field.
      */
     public Seagrass(Field field, Location location)
     {
@@ -35,26 +39,31 @@ public class Seagrass extends Plant
     }
 
     /**
+     * This is what the seagrass does most of the time. 
+     * It will reproduce and die of old age.
      * 
+     * @param newSeagrass A list to return new plants of type seagrass.
      */
     public void act(List<Organism> newSeagrass)
     {
         computeAge(AGE_OF_DECAY, RATE_OF_DECAY);
         if(isAlive()) {
             //
-            if(canReproduce(AGE_OF_REPRODUCTION, RERODUCTION_PROBABILITY)){
+            if(canReproduce(REPRODUCTION_AGE, RERODUCTION_PROBABILITY)){
                 reproduce(newSeagrass);
             }
             //
             if(getVitality() <= 0){
                 setDead();
-                System.out.println("GONE");
             }
         }
     }
 
     /**
+     * Check whether or not this seagrass is to reproduce at this step.
+     * New individuals will be made into free adjacent locations.
      * 
+     * @param newSeagrass A list to return new plants of type seagrass.
      */
     protected void reproduce(List<Organism> newSeagrass)
     {

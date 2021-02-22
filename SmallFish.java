@@ -15,7 +15,7 @@ public class SmallFish extends Animal
     private static final int AGE_OF_DECAY = 30;
     // The rate of change of death probability.
     private static final double RATE_OF_DECAY = 0.1;
-    // 
+    // The maximum food level a small fish can reach from feeding on a food source.
     private static final int MAX_FOOD_LEVEL = 9;
     // The small fish' worth as a food source.
     private static final int FOOD_VALUE = 9;
@@ -44,8 +44,8 @@ public class SmallFish extends Animal
         if(getRandom().nextDouble() <= MALE_TO_FEMALE_RATIO){
             changeGender();
         }
-        setFoodValue(FOOD_VALUE);
         setMaxFoodLevel(MAX_FOOD_LEVEL);
+        setFoodValue(FOOD_VALUE);
         incrementFoodLevel(getMaxFoodLevel());
         addDiet("Seagrass");
     }   
@@ -60,10 +60,11 @@ public class SmallFish extends Animal
     {
         computeAge(AGE_OF_DECAY, RATE_OF_DECAY);
         if(isAlive()) {
-            //
+            // Try to reproduce.
             if(foundMate()){
                 giveBirth(newSmallFish, litterSize());
             }
+            // Try to find one of its food sources.
             findFoodPlant();
             // Try to move into a free location.
             Location newLocation = getField().freeAdjacentLocation(getLocation());

@@ -23,15 +23,15 @@ public abstract class Organism
     private Location location;
     // Whether the organism is alive or not.
     private boolean alive;
-    //
+    // The kingdom that the organism represents.
     private boolean isAnimal;
     // The name of the distinct species.
     private String speciesName;    
     // The organism's age.
     private int age;
-    //
+    // The ability to undertake an action.
     private int vitality;
-    // A set holding the food source for a specific species.
+    // A set holding the food sources for a specific species.
     private HashSet<String> diet;
     // The organism's food level.
     private int foodLevel;
@@ -117,7 +117,9 @@ public abstract class Organism
     }
     
     /**
-     * 
+     *  Check whether the organism is representative of the animal kingdom.
+     *  
+     *  @return True if it is from the animal kingdom, False if it is from the plant kingdom.
      */
     protected boolean isAnimal()
     {
@@ -146,7 +148,9 @@ public abstract class Organism
     }
 
     /**
+     * Return the vitality of the organism.
      * 
+     * @return The vitality of the organism.
      */
     protected int getVitality()
     {
@@ -154,7 +158,7 @@ public abstract class Organism
     }
     
     /**
-     * Return the set holding the otganism's diet.
+     * Return the set holding the organism's diet.
      * 
      * @return The set holding the otganism's diet.
      */
@@ -231,6 +235,14 @@ public abstract class Organism
     }
 
     /**
+     * Change the organism's state of life.
+     */
+    protected void changeState()
+    {
+        alive = !alive;
+    }
+    
+    /**
      * Indicate that the organism is no longer alive.
      * It is removed from the field.
      */
@@ -245,7 +257,7 @@ public abstract class Organism
     }
 
     /**
-     * 
+     * Change the organism's kingdom.
      */
     protected void changeKingdom()
     {
@@ -279,7 +291,9 @@ public abstract class Organism
     }
 
     /**
+     * Set the value of the vitality field.
      * 
+     * @param vitality The vitality of the organism.
      */
     protected void setVitality(int vitality)
     {
@@ -287,12 +301,11 @@ public abstract class Organism
     }
     
     /**
-     * 
+     * Decrement the vitality of an organism. 
      */
     protected void decrementVitality()
     {
         vitality--;
-        System.out.println("ONE DOWN");
     }
     
     /**
@@ -358,7 +371,7 @@ public abstract class Organism
     }
 
     /**
-     *  Set the value to the max food level field.
+     *  Set the value of the max food level field.
      *  
      *  @param maxFoodLevel The organism's food level.
      */

@@ -93,8 +93,6 @@ public abstract class Animal extends Organism
     /**
      * Look for food source adjacent to the current location.
      * Only the first live food source is eaten.
-     * 
-     * @return Where food was found, or null if it wasn't.
      */
     protected void findFoodPlant()
     {
@@ -110,7 +108,6 @@ public abstract class Animal extends Organism
                     if(food.isAlive() && !food.isAnimal()) { 
                         food.decrementVitality();
                         incrementFoodLevel(food.getFoodValue());
-                        System.out.println("EATEN");
                     }
                 }
             }
@@ -120,6 +117,8 @@ public abstract class Animal extends Organism
     /**
      * The process of an animal finding a mate of the same species
      * and of the opposite gender.
+     * 
+     * @return True if the adjecent organism is covering the needed requirements, False otherwise.
      */
     protected boolean foundMate()
     {
@@ -168,6 +167,8 @@ public abstract class Animal extends Organism
     /**
      * An animal can breed if it has reached its breeding age 
      * and their pregnancy period is over.
+     * 
+     * @param breedingAge The minimum age for the breeding process to occur.
      * 
      * @return true if the animal can breed, false otherwise.
      */
