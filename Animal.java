@@ -12,7 +12,7 @@ public abstract class Animal extends Organism
     // Characteristics shared by all animals (class variables).
     private static final double INFECTION_PROBABILITY = 0.001;
 
-    private static final double SPREADING_PROBABILITY = 0.01;
+    private static final double SPREADING_PROBABILITY = 0.05;
 
     // Characteristics shared by all animals (instance fields).    
 

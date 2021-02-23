@@ -115,9 +115,15 @@ public class SimulatorView extends JFrame
         for(int row = 0; row < field.getDepth(); row++) {
             for(int col = 0; col < field.getWidth(); col++) {
                 Object animal = field.getObjectAt(row, col);
-                if(animal != null) {
+                if(animal != null && animal instanceof Organism) {
                     stats.incrementCount(animal.getClass());
-                    fieldView.drawMark(col, row, getColor(animal.getClass()));
+                    Organism organism = (Organism) animal;
+                    if(organism.isInfected()){
+                        fieldView.drawMark(col, row, new Color(255, 0, 0, 255));
+                    }
+                    else{
+                        fieldView.drawMark(col, row, getColor(animal.getClass()));
+                    }
                 }
                 else {
                     fieldView.drawMark(col, row, EMPTY_COLOR);

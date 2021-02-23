@@ -491,7 +491,7 @@ public abstract class Organism
         if(!isInfected && testProbability(spreadingProbability)){
             isInfected = true;
             //doubles the rate of decay
-            rateOfDecay = rateOfDecay * 2; 
+            rateOfDecay = 1; 
             
         }
     }
