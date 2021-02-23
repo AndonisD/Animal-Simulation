@@ -488,7 +488,7 @@ public abstract class Organism
     
     public void infect()
     {
-        if(!isInfected){
+        if(!isInfected && testProbability(spreadingProbability)){
             isInfected = true;
             //doubles the rate of decay
             rateOfDecay = rateOfDecay * 2; 

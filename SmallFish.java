@@ -24,7 +24,7 @@ public class SmallFish extends Animal
     // The probability of a female meeting a male.
     private static final double MALE_TO_FEMALE_RATIO = 0.5;
     // The likelihood of small fish mating.
-    private static final double IMPREGNATION_PROBABILITY = 0.12;
+    private static final double IMPREGNATION_PROBABILITY = 0.8;
     // The maximum number of births.
     private static final int MAX_LITTER_SIZE = 4;
     // The minimun of steps before next pregnancy.
