@@ -11,18 +11,18 @@ public class Seagrass extends Plant
 {
     // Characteristics shared by all small fish (class variables).
 
-    // The ability of a seagrass to undertake a specific action.
-    private static final int INITIAL_VITALITY = 3;
     // The age at which a seagrass starts to have a chance of dying of age.
     private static final int AGE_OF_DECAY = 30;
-    // The rate of change of death probability.
-    private static final double RATE_OF_DECAY = 0.1;
+    // The ability of a seagrass to undertake a specific action.
+    private static final int INITIAL_VITALITY = 3;
     // The seagrass' worth as a food source.
     private static final int FOOD_VALUE = 4;
     // The age at which a seagrass starts to have a chance of reproducing.
     private static final int REPRODUCTION_AGE = 1;
     // The probability of a seagrass reproducing.
     private static final double RERODUCTION_PROBABILITY = 0.06;
+    // The rate of change of death probability.
+    private static final double RATE_OF_DECAY = 0.1;
 
     /**
      * Create a new seagrass. A seagrass is created with age of zero.
@@ -33,11 +33,11 @@ public class Seagrass extends Plant
     public Seagrass(Field field, Location location)
     {
         super(field, location);
-        setAgeOfDecay(AGE_OF_DECAY);
-        setRateOfDecay(RATE_OF_DECAY);
         setSpeciesName("Seagrass");
+        setAgeOfDecay(AGE_OF_DECAY);
         setVitality(INITIAL_VITALITY);
         setFoodValue(FOOD_VALUE);
+        setRateOfDecay(RATE_OF_DECAY);
     }
 
     /**
@@ -50,11 +50,11 @@ public class Seagrass extends Plant
     {
         computeAge();
         if(isAlive()) {
-            //
+            // Try to reproduce.
             if(canReproduce(REPRODUCTION_AGE, RERODUCTION_PROBABILITY)){
                 reproduce(newSeagrass);
             }
-            //
+            // Tracks the vitality of the plant.
             if(getVitality() <= 0){
                 setDead();
             }

@@ -29,10 +29,8 @@ public abstract class Organism
     private String speciesName;    
     // The organism's age.
     private int age;
-    //
+    // The age at which a shark starts to have a chance of dying of age.
     private int ageOfDecay;
-    //
-    private double rateOfDecay;
     // The ability to undertake an action.
     private int vitality;
     // A set holding the food sources for a specific species.
@@ -43,15 +41,17 @@ public abstract class Organism
     private int maxFoodLevel;
     // The organism's worth as a food source.
     private int foodValue;
+    // Whether the organism is infected or not.
+    private boolean isInfected;
+    // The probability of an organism getting infected by a disease
+    private double infectionProbability;
+    // The probability of an organism passing the disease to another organism.
+    private double spreadingProbability;
     // The probability of a organism dying.
     private double deathProbability;
-    //
-    private boolean isInfected;
-    
-    private double infectionProbability;
-    
-    private double spreadingProbability;
-    
+    // The rate of change of death probability.
+    private double rateOfDecay;
+
     /**
      * Create a new organism at location in field with specific traits.
      * 
@@ -66,17 +66,21 @@ public abstract class Organism
         isAnimal = true;
         speciesName = "";
         age = 0;
+        ageOfDecay = 0;
         vitality = 0;
         diet = new HashSet<>();
         foodLevel = 0;
         maxFoodLevel = 0;
         foodValue = 0;
-        deathProbability = 0.0;
         isInfected = false;
         infectionProbability = 0.0;
         spreadingProbability = 0.0;
+        deathProbability = 0.0;
+        rateOfDecay = 0.0;
     }
 
+    // Abstract methods 
+    
     /**
      * Make this organism act - that is: make it do
      * whatever it wants/needs to do.
@@ -85,6 +89,21 @@ public abstract class Organism
      */
     abstract public void act(List<Organism> newOrganisms);
 
+    /**
+     * Make this organism spread the disease it carries.
+     */
+    abstract protected void spreadInfection();
+    
+    // ...
+    
+    /**
+     * 
+     */
+    protected boolean testProbability(double probability)
+    {
+        return getRandom().nextDouble() <= probability;
+    }
+    
     // Class variables accessor methods.
 
     /**
@@ -128,11 +147,11 @@ public abstract class Organism
     {
         return alive;
     }
-    
+
     /**
-     *  Check whether the organism is representative of the animal kingdom.
+     * Check whether the organism is representative of the animal kingdom.
      *  
-     *  @return True if it is from the animal kingdom, False if it is from the plant kingdom.
+     * @return True if it is from the animal kingdom, False if it is from the plant kingdom.
      */
     protected boolean isAnimal()
     {
@@ -161,6 +180,16 @@ public abstract class Organism
     }
 
     /**
+     * Return The age at which an organism starts to have a chance of dying of age.
+     * 
+     * @return The age at which an organism starts to have a chance of dying of age.
+     */
+    protected int getAgeOfDecay()
+    {
+        return ageOfDecay;
+    }
+    
+    /**
      * Return the vitality of the organism.
      * 
      * @return The vitality of the organism.
@@ -169,7 +198,7 @@ public abstract class Organism
     {
         return vitality;
     }
-    
+
     /**
      * Return the set holding the organism's diet.
      * 
@@ -182,7 +211,7 @@ public abstract class Organism
 
     /**
      * Return a boolean value depening whether or not this food source
-     * is in the diet set or not.
+     * is in the diet set.
      * 
      * @return True if the food source is in the set, False otherwise.
      */
@@ -222,6 +251,36 @@ public abstract class Organism
     }
 
     /**
+     * Return whether the organism has been infected by a disease.
+     * 
+     * @return True if it is infected, False otherwise.
+     */
+    protected boolean isInfected()
+    {
+        return isInfected;
+    }
+
+    /**
+     * Return the infection probability of the organism.
+     * 
+     * @return The infection probablity of the organism.
+     */
+    protected double getInfectionProbability()
+    {
+        return infectionProbability;
+    }
+
+    /**
+     * Return the spreading probability of the organism
+     * 
+     * @return The spreading probability of the organism.
+     */
+    protected double getSpreadingProbability()
+    {
+        return spreadingProbability;
+    }
+    
+    /**
      * Return the death probability of the organism.
      * 
      * @return The death probablity of the organism.
@@ -231,46 +290,98 @@ public abstract class Organism
         return deathProbability;
     }
     
-    protected boolean isInfected()
-    {
-        return isInfected;
-    }
-    
     /**
-     * Return the death probability of the organism.
+     * Return the rate of decay of an organism.
      * 
-     * @return The death probablity of the organism.
-     */
-    protected double getInfectionProbability()
-    {
-        return infectionProbability;
-    }
-    
-    /**
-     * Return the death probability of the organism.
-     * 
-     * @return The death probablity of the organism.
-     */
-    protected int getAgeOfDecay()
-    {
-        return ageOfDecay;
-    }
-    
-    /**
-     * Return the death probability of the organism.
-     * 
-     * @return The death probablity of the organism.
+     * @return The rate of decay of an organism.
      */
     protected double getRateOfDecay()
     {
         return rateOfDecay;
     }
-    
-    protected double getSpreadingProbability()
-    {
-        return spreadingProbability;
-    }
 
+    // Instance field set methods.
+    
+    /**
+     * Set the String value in the species' name field.
+     * 
+     * @param speciesName The name of the species.
+     */
+    protected void setSpeciesName(String speciesName)
+    {
+        this.speciesName = speciesName;
+    }
+    
+    /**
+     * Set the value to the food value field.
+     * 
+     * @param foodValue The organism's worth as a food source.
+     */
+    protected void setAgeOfDecay(int ageOfDecay)
+    {
+        this.ageOfDecay = ageOfDecay;
+    }
+    
+    /**
+     * Set the value of the vitality field.
+     * 
+     * @param vitality The vitality of the organism.
+     */
+    protected void setVitality(int vitality)
+    {
+        this.vitality = vitality;
+    }
+    
+    /**
+     * Set the value of the max food level field.
+     *  
+     * @param maxFoodLevel The organism's food level.
+     */
+    protected void setMaxFoodLevel(int maxFoodLevel)
+    {
+        this.maxFoodLevel = maxFoodLevel;
+    }
+    
+    /**
+     * Set the value of the food value field.
+     * 
+     * @param foodValue The organism's worth as a food source.
+     */
+    protected void setFoodValue(int foodValue)
+    {
+        this.foodValue = foodValue;
+    }
+    
+    /**
+     * Set the value of the infection probability field.
+     * 
+     * @param infectionProbability The probability of an organism catching a disease.
+     */
+    protected void setInfectionProbability(double infectionProbability)
+    {
+        this.infectionProbability = infectionProbability;
+    }
+    
+    /**
+     * Set the value of the spreading probability field.
+     * 
+     * @param spreadingProbability The probability of an organism passing the disease to other organisms.
+     */
+    protected void setSpreadingProbability(double spreadingProbability)
+    {
+        this.spreadingProbability = spreadingProbability;
+    }
+    
+    /**
+     * Set the value of the rate of decay field.
+     * 
+     * @param rateOfDecay The rate of change of death probability.
+     */
+    protected void setRateOfDecay(double rateOfDecay)
+    {
+        this.rateOfDecay = rateOfDecay;
+    }
+    
     // Instance fields mutator methods.
 
     /**
@@ -286,14 +397,6 @@ public abstract class Organism
         location = newLocation;
         field.place(this, newLocation);
     }
-
-    /**
-     * Change the organism's state of life.
-     */
-    protected void changeState()
-    {
-        alive = !alive;
-    }
     
     /**
      * Indicate that the organism is no longer alive.
@@ -308,6 +411,14 @@ public abstract class Organism
             field = null;
         }
     }
+    
+    /**
+     * Change the organism's state of life.
+     */
+    protected void changeState()
+    {
+        alive = !alive;
+    }
 
     /**
      * Change the organism's kingdom.
@@ -316,9 +427,9 @@ public abstract class Organism
     {
         isAnimal = !isAnimal;
     }
-    
+
     /**
-     *  Increments the age of an organism.
+     * Increments the age of an organism.
      */
     protected void incrementAge()
     {
@@ -344,31 +455,11 @@ public abstract class Organism
     }
 
     /**
-     * Set the value of the vitality field.
-     * 
-     * @param vitality The vitality of the organism.
-     */
-    protected void setVitality(int vitality)
-    {
-        this.vitality = vitality;
-    }
-    
-    /**
      * Decrement the vitality of an organism. 
      */
     protected void decrementVitality()
     {
         vitality--;
-    }
-    
-    /**
-     * Set the String value in the species' name field.
-     * 
-     * @param speciesName The name of the species.
-     */
-    protected void setSpeciesName(String speciesName)
-    {
-        this.speciesName = speciesName;
     }
 
     /**
@@ -386,7 +477,7 @@ public abstract class Organism
     /**
      * Remove a food source from the set of diet of an ogranism.
      * 
-     * @ param foodName The food that is to be removed.
+     * @param foodName The food that is to be removed.
      */
     protected void removeFromDiet(String foodName)
     {
@@ -394,11 +485,11 @@ public abstract class Organism
     }
 
     /**
-     *  Upon feeding on a food source the organism's food level is increased,
-     *  if the food level exceeds the maximum food level it is set to the 
-     *  maximum food level.
+     * Upon feeding on a food source the organism's food level is increased,
+     * if the food level exceeds the maximum food level it is set to the 
+     * maximum food level.
      *  
-     *  @param foodValue The organism's worth as a food source.
+     * @param foodValue The organism's worth as a food source.
      */
     protected void incrementFoodLevel(int foodValue)
     {
@@ -424,37 +515,7 @@ public abstract class Organism
     }
 
     /**
-     *  Set the value of the max food level field.
-     *  
-     *  @param maxFoodLevel The organism's food level.
-     */
-    protected void setMaxFoodLevel(int maxFoodLevel)
-    {
-        this.maxFoodLevel = maxFoodLevel;
-    }
-
-    /**
-     * Set the value to the food value field.
-     * 
-     * @param foodValue The organism's worth as a food source.
-     */
-    protected void setFoodValue(int foodValue)
-    {
-        this.foodValue = foodValue;
-    }
-
-    /**
-     *  Compute the death probability.
-     *  
-     *  @param rateOfDecay The rate of change of death probability.
-     */
-    protected void computeDeathProbability(double rateOfDecay)
-    {
-        deathProbability = deathProbability + rateOfDecay;
-    }
-    
-    /**
-     *  
+     * Change whether the organism carries a disease or not.
      */
     protected void changeInfected()
     {
@@ -462,7 +523,22 @@ public abstract class Organism
     }
     
     /**
+     * Infect an organism with a disease.
+     * The diseases boost the chances of organism dying earlier.
+     */
+    protected void infect()
+    {
+        if(!isInfected && testProbability(spreadingProbability)){
+            isInfected = true;
+            rateOfDecay = 1; 
+        }
+    } 
+    
+    /**
+     *  Check whether an organism has already been infected or not.
+     *  Infect them if they are not carrying a disease.
      *  
+     *  @return True if it is infected, False otherwise.
      */
     protected boolean checkInfected()
     {
@@ -477,64 +553,12 @@ public abstract class Organism
     }
     
     /**
-     * Set the value to the food value field.
-     * 
-     * @param foodValue The organism's worth as a food source.
+     * Compute the death probability.
+     *  
+     * @param rateOfDecay The rate of change of death probability.
      */
-    protected void setInfectionProbability(double infectionProbability)
+    protected void computeDeathProbability(double rateOfDecay)
     {
-        this.infectionProbability = infectionProbability;
-    }
-    
-    public void infect()
-    {
-        if(!isInfected && testProbability(spreadingProbability)){
-            isInfected = true;
-            //doubles the rate of decay
-            rateOfDecay = 1; 
-            
-        }
-    }
-    
-    /**
-     * Set the value to the food value field.
-     * 
-     * @param foodValue The organism's worth as a food source.
-     */
-    protected void setAgeOfDecay(int ageOfDecay)
-    {
-        this.ageOfDecay = ageOfDecay;
-    }
-    
-    /**
-     * Set the value to the food value field.
-     * 
-     * @param foodValue The organism's worth as a food source.
-     */
-    protected void setRateOfDecay(double rateOfDecay)
-    {
-        this.rateOfDecay = rateOfDecay;
-    }
-    
-    /**
-     * Set the value to the food value field.
-     * 
-     * @param foodValue The organism's worth as a food source.
-     */
-    protected void setSpreadingProbability(double spreadingProbability)
-    {
-        this.spreadingProbability = spreadingProbability;
-    }
-
-    protected boolean testProbability(double probability)
-    {
-        return getRandom().nextDouble() <= probability;
-    }
-    
-    //
-    
-    abstract protected void spreadInfection();
-    
-    
-    
+        deathProbability = deathProbability + rateOfDecay;
+    } 
 }

@@ -13,8 +13,6 @@ public class SmallFish extends Animal
 
     // The age at which a small fish starts to have a chance of dying of age.
     private static final int AGE_OF_DECAY = 30;
-    // The rate of change of death probability.
-    private static final double RATE_OF_DECAY = 0.1;
     // The maximum food level a small fish can reach from feeding on a food source.
     private static final int MAX_FOOD_LEVEL = 9;
     // The small fish' worth as a food source.
@@ -29,6 +27,8 @@ public class SmallFish extends Animal
     private static final int MAX_LITTER_SIZE = 4;
     // The minimun of steps before next pregnancy.
     private static final int PREGNANCY_PERIOD = 1;
+    // The rate of change of death probability.
+    private static final double RATE_OF_DECAY = 0.1;
 
     /**
      * Create a new small fish. A small fish is created with age
@@ -45,11 +45,11 @@ public class SmallFish extends Animal
             changeGender();
         }
         setAgeOfDecay(AGE_OF_DECAY);
-        setRateOfDecay(RATE_OF_DECAY);
         setMaxFoodLevel(MAX_FOOD_LEVEL);
         setFoodValue(FOOD_VALUE);
         incrementFoodLevel(getMaxFoodLevel());
         addDiet("Seagrass");
+        setRateOfDecay(RATE_OF_DECAY);
     }   
 
     /**
@@ -60,8 +60,7 @@ public class SmallFish extends Animal
      */
     public void act(List<Organism> newSmallFish)
     {
-        computeAge();
-        
+        computeAge();   
         if(isAlive()) {
             // Try to reproduce.
             if(foundMate()){
@@ -69,10 +68,9 @@ public class SmallFish extends Animal
             }
             // Try to find one of its food sources.
             findFoodPlant();
-            //
+            // Try to infect others if it is a carrier of a disease.
             if(checkInfected()){
              spreadInfection();
-             
             }
             // Try to move into a free location.
             Location newLocation = getField().freeAdjacentLocation(getLocation());

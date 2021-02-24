@@ -9,9 +9,11 @@ import java.util.Iterator;
  */
 public abstract class Plant extends Organism
 {
-    //
+    // Characteristics shared by all animals (class variables).
+    
+    // The probability of an animal getting a desease.
     private static final double INFECTION_PROBABILITY = 0.01;
-    //
+    // The probability of an animal spreading tthe desease.
     private static final double SPREADING_PROBABILITY = 0.1;
     
     /**
@@ -28,6 +30,37 @@ public abstract class Plant extends Organism
         setSpreadingProbability(SPREADING_PROBABILITY);
     }
 
+    // Abstract methods.
+    
+    /**
+     * Check whether or not this plant is to reproduce at this step.
+     * 
+     * @param newPlants A list to return new plants.
+     */
+    abstract protected void reproduce(List<Organism> newPlants);
+    
+    // Class variables accessor methods.
+    
+    /**
+     * Return the infection probability.
+     * 
+     * @return The infection probability.
+     */
+    protected double getInfectionProbability()
+    {
+        return INFECTION_PROBABILITY;
+    }
+    
+    /**
+     * Return the spreading probability.
+     * 
+     * @return The spreading probability.
+     */
+    protected double getSpreadingPorbability()
+    {
+        return SPREADING_PROBABILITY;
+    }
+    
     // Mutator methods, describing action or process.
 
     /**
@@ -44,9 +77,11 @@ public abstract class Plant extends Organism
         return getAge() >= reproductionAge && getRandom().nextDouble() <= reproductionProbability;
     }
     
+    /**
+     * The process of a plant spreading the disease to other organisms.
+     */
     protected void spreadInfection()
     {
+        
     }
-    
-    abstract protected void reproduce(List<Organism> newSeagrass);
 }

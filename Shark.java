@@ -13,8 +13,6 @@ public class Shark extends Animal
 
     // The age at which a shark starts to have a chance of dying of age.
     private static final int AGE_OF_DECAY = 140;
-    // The rate of change of death probability.
-    private static final double RATE_OF_DECAY = 0.1;
     // The maximum food level a shark can reach from feeding on a food source.
     private static final int MAX_FOOD_LEVEL = 9;
     // The age at which a shark can start to breed.
@@ -27,6 +25,8 @@ public class Shark extends Animal
     private static final int MAX_LITTER_SIZE = 2;
     // The minimun of steps before next pregnancy.
     private static final int PREGNANCY_PERIOD = 1;   
+    // The rate of change of death probability.
+    private static final double RATE_OF_DECAY = 0.1;
 
     /**
      * Create a shark. A shark can be created as a new born (age zero
@@ -38,15 +38,15 @@ public class Shark extends Animal
     public Shark(Field field, Location location)
     {
         super(field, location);
-        setAgeOfDecay(AGE_OF_DECAY);
-        setRateOfDecay(RATE_OF_DECAY);
         setSpeciesName("Shark");
         if(getRandom().nextDouble() <= MALE_TO_FEMALE_RATIO){
             changeGender();
         }
+        setAgeOfDecay(AGE_OF_DECAY);
         setMaxFoodLevel(MAX_FOOD_LEVEL);
         incrementFoodLevel(getMaxFoodLevel());
         addDiet("SmallFish");
+        setRateOfDecay(RATE_OF_DECAY);
     }
 
     /**
@@ -71,6 +71,10 @@ public class Shark extends Animal
             if(newLocation == null) { 
                 // No food found - try to move to a free location.
                 newLocation = getField().freeAdjacentLocation(getLocation());
+            }
+            // Try to infect others if it is a carrier of a disease.
+            if(checkInfected()) {
+                spreadInfection();
             }
             // See if it was possible to move.
             if(newLocation != null) {

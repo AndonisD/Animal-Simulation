@@ -10,8 +10,10 @@ import java.util.Iterator;
 public abstract class Animal extends Organism
 {
     // Characteristics shared by all animals (class variables).
+    
+    // The probability of an animal getting a desease.
     private static final double INFECTION_PROBABILITY = 0.001;
-
+    // The probability of an animal spreading tthe desease.
     private static final double SPREADING_PROBABILITY = 0.05;
 
     // Characteristics shared by all animals (instance fields).    
@@ -35,6 +37,38 @@ public abstract class Animal extends Organism
         setSpreadingProbability(SPREADING_PROBABILITY);
     }
 
+    // Abstract methods.
+
+    /**
+     * Check whether or not this small fish is to give birth at this step.
+     * 
+     * @param newAnimals A list to return newly born animals.
+     * @param litterSize The number of births.
+     */
+    abstract protected void giveBirth(List<Organism> newAnimals, int litterSize);
+
+    // Class variables accessor methods.
+    
+    /**
+     * Return the infection probability.
+     * 
+     * @return The infection probability.
+     */
+    protected double getInfectionProbability()
+    {
+        return INFECTION_PROBABILITY;
+    }
+    
+    /**
+     * Return the spreading probability.
+     * 
+     * @return The spreading probability.
+     */
+    protected double getSpreadingPorbability()
+    {
+        return SPREADING_PROBABILITY;
+    }
+    
     // Instance fields accessor methods.
 
     /**
@@ -56,7 +90,7 @@ public abstract class Animal extends Organism
     {
         return isFemale;
     }
-
+    
     // Instance fields mutator methods.
 
     /**
@@ -160,7 +194,7 @@ public abstract class Animal extends Organism
      * @return The number of births (may be zero).
      */
     protected int impregnate(int breedingAge, int maxLitterSize, 
-    int pregnancyPeriod, double impregnationProbability)
+                             int pregnancyPeriod, double impregnationProbability)
     {
         int litterSize = 0;
         timeUntilImpregnation--;
@@ -177,14 +211,18 @@ public abstract class Animal extends Organism
      * 
      * @param breedingAge The minimum age for the breeding process to occur.
      * 
-     * @return true if the animal can breed, false otherwise.
+     * @return True if the animal can breed, False otherwise.
      */
     protected boolean canBreed(int breedingAge)
     {
         return getAge() >= breedingAge && timeUntilImpregnation <= 0;
     }
 
-    protected void spreadInfection(){
+    /**
+     * The process of an animal spreading the disease to other animals.
+     */
+    protected void spreadInfection()
+    {
         Field field = getField();
         List<Location> adjacent = field.adjacentLocations(getLocation());
         Iterator<Location> it = adjacent.iterator();
@@ -195,11 +233,8 @@ public abstract class Animal extends Organism
                 Organism animal = (Organism) organism;
                 if(animal.isAlive() && animal.isAnimal()) { 
                     animal.infect();
-                    System.out.println("spreading");
                 }
             }
         }
     }
-    
-    abstract protected void giveBirth(List<Organism> newSmallFish, int litterSize);
 }
