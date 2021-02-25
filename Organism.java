@@ -47,6 +47,8 @@ public abstract class Organism
     private double infectionProbability;
     // The probability of an organism passing the disease to another organism.
     private double spreadingProbability;
+    // 
+    private double cureProbability;
     // The probability of a organism dying.
     private double deathProbability;
     // The rate of change of death probability.
@@ -75,12 +77,13 @@ public abstract class Organism
         isInfected = false;
         infectionProbability = 0.0;
         spreadingProbability = 0.0;
+        cureProbability = 0.0;
         deathProbability = 0.0;
         rateOfDecay = 0.0;
     }
 
     // Abstract methods. 
-    
+
     /**
      * Make this organism act - that is: make it do
      * whatever it wants/needs to do.
@@ -89,11 +92,6 @@ public abstract class Organism
      */
     abstract public void act(List<Organism> newOrganisms);
 
-    /**
-     * Make this organism spread the disease it carries.
-     */
-    abstract protected void spreadInfection();
-    
     // Class variables accessor methods.
 
     /**
@@ -107,7 +105,7 @@ public abstract class Organism
     }
 
     // Class variables mutator methods.
-    
+
     /**
      * Return the result of a given probability.
      * 
@@ -119,7 +117,7 @@ public abstract class Organism
     {
         return getRandom().nextDouble() <= probability;
     }
-    
+
     // Instance fields accessor methods.
 
     /**
@@ -192,7 +190,7 @@ public abstract class Organism
     {
         return ageOfDecay;
     }
-    
+
     /**
      * Return the vitality of the organism.
      * 
@@ -283,7 +281,15 @@ public abstract class Organism
     {
         return spreadingProbability;
     }
-    
+
+    /**
+     * 
+     */
+    protected double getCureProbability()
+    {
+        return cureProbability;
+    }
+
     /**
      * Return the death probability of the organism.
      * 
@@ -293,7 +299,7 @@ public abstract class Organism
     {
         return deathProbability;
     }
-    
+
     /**
      * Return the rate of decay of an organism.
      * 
@@ -305,7 +311,7 @@ public abstract class Organism
     }
 
     // Instance field set methods.
-    
+
     /**
      * Set the String value in the species' name field.
      * 
@@ -315,7 +321,7 @@ public abstract class Organism
     {
         this.speciesName = speciesName;
     }
-    
+
     /**
      * Set the value to the food value field.
      * 
@@ -325,7 +331,7 @@ public abstract class Organism
     {
         this.ageOfDecay = ageOfDecay;
     }
-    
+
     /**
      * Set the value of the vitality field.
      * 
@@ -335,7 +341,7 @@ public abstract class Organism
     {
         this.vitality = vitality;
     }
-    
+
     /**
      * Set the value of the max food level field.
      *  
@@ -345,7 +351,7 @@ public abstract class Organism
     {
         this.maxFoodLevel = maxFoodLevel;
     }
-    
+
     /**
      * Set the value of the food value field.
      * 
@@ -355,7 +361,7 @@ public abstract class Organism
     {
         this.foodValue = foodValue;
     }
-    
+
     /**
      * Set the value of the infection probability field.
      * 
@@ -365,7 +371,7 @@ public abstract class Organism
     {
         this.infectionProbability = infectionProbability;
     }
-    
+
     /**
      * Set the value of the spreading probability field.
      * 
@@ -375,7 +381,15 @@ public abstract class Organism
     {
         this.spreadingProbability = spreadingProbability;
     }
-    
+
+    /**
+     * 
+     */
+    protected void setCureProbability(double cureProbability)
+    {
+        this.cureProbability = cureProbability;
+    }
+
     /**
      * Set the value of the rate of decay field.
      * 
@@ -385,7 +399,7 @@ public abstract class Organism
     {
         this.rateOfDecay = rateOfDecay;
     }
-    
+
     // Instance fields mutator methods.
 
     /**
@@ -401,7 +415,7 @@ public abstract class Organism
         location = newLocation;
         field.place(this, newLocation);
     }
-    
+
     /**
      * Indicate that the organism is no longer alive.
      * It is removed from the field.
@@ -415,7 +429,7 @@ public abstract class Organism
             field = null;
         }
     }
-    
+
     /**
      * Change the organism's state of life.
      */
@@ -441,20 +455,21 @@ public abstract class Organism
     }
 
     /**
-     * Computes the age.
-     * This could result in the organism's death, depending on its age.
      * 
-     * @param ageOfDecay The age at which an ogranism starts to have a chance of dying.
-     * @param rateOfDecay The rate of change of death probability.
      */
-    protected void computeAge()
+    protected void decideDeath()
     {
-        incrementAge();
-        if(getAge() > ageOfDecay) {
+        if(isInfected()) {
+            setDead();
+        }
+        else if(getAge() > ageOfDecay) {
             computeDeathProbability(rateOfDecay);
             if(getRandom().nextDouble() <= getDeathProbability()) {
                 setDead();
             }
+        }
+        else if(foodLevel <= 0) {
+            setDead();
         }
     }
 
@@ -513,9 +528,6 @@ public abstract class Organism
     protected void decrementFoodLevel()
     {
         foodLevel--;
-        if(foodLevel <= 0) {
-            setDead();
-        }
     }
 
     /**
@@ -525,7 +537,7 @@ public abstract class Organism
     {
         isInfected = !isInfected;
     }
-    
+
     /**
      * Infect an organism with a disease.
      * The diseases boost the chances of organism dying earlier.
@@ -534,10 +546,9 @@ public abstract class Organism
     {
         if(!isInfected && testProbability(spreadingProbability)){
             isInfected = true;
-            rateOfDecay = 1; 
         }
     } 
-    
+
     /**
      *  Check whether an organism has already been infected or not.
      *  Infect them if they are not carrying a disease.
@@ -546,7 +557,8 @@ public abstract class Organism
      */
     protected boolean checkInfected()
     {
-        if(isInfected){
+        if(isInfected) {
+            cureOrDie();
             return true;
         }
         else if(testProbability(infectionProbability)){
@@ -555,7 +567,20 @@ public abstract class Organism
         }
         return false;
     }
-    
+
+    /**
+     * 
+     */
+    protected void cureOrDie()
+    {
+        if(testProbability(cureProbability) ) {
+            changeInfected();
+        }
+        else {
+            setDead();
+        }
+    }
+
     /**
      * Compute the death probability.
      *  

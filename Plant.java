@@ -13,8 +13,6 @@ public abstract class Plant extends Organism
     
     // The probability of an animal getting a desease.
     private static final double INFECTION_PROBABILITY = 0.01;
-    // The probability of an animal spreading tthe desease.
-    private static final double SPREADING_PROBABILITY = 0.1;
     
     /**
      * Create a new plant at a location in field.
@@ -27,7 +25,6 @@ public abstract class Plant extends Organism
         super(field, location);
         changeKingdom();
         setInfectionProbability(INFECTION_PROBABILITY);
-        setSpreadingProbability(SPREADING_PROBABILITY);
     }
 
     // Abstract methods.
@@ -51,16 +48,6 @@ public abstract class Plant extends Organism
         return INFECTION_PROBABILITY;
     }
     
-    /**
-     * Return the spreading probability.
-     * 
-     * @return The spreading probability.
-     */
-    protected double getSpreadingPorbability()
-    {
-        return SPREADING_PROBABILITY;
-    }
-    
     // Mutator methods, describing action or process.
 
     /**
@@ -75,13 +62,5 @@ public abstract class Plant extends Organism
     protected boolean canReproduce(int reproductionAge, double reproductionProbability)
     {
         return getAge() >= reproductionAge && getRandom().nextDouble() <= reproductionProbability;
-    }
-    
-    /**
-     * The process of a plant spreading the disease to other organisms.
-     */
-    protected void spreadInfection()
-    {
-        
     }
 }

@@ -15,6 +15,8 @@ public abstract class Animal extends Organism
     private static final double INFECTION_PROBABILITY = 0.001;
     // The probability of an animal spreading tthe desease.
     private static final double SPREADING_PROBABILITY = 0.05;
+    // 
+    private static final double CURE_PROBABILITY = 0.2;
 
     // Characteristics shared by all animals (instance fields).    
 
@@ -35,6 +37,7 @@ public abstract class Animal extends Organism
         isFemale = true;
         setInfectionProbability(INFECTION_PROBABILITY);
         setSpreadingProbability(SPREADING_PROBABILITY);
+        setCureProbability(CURE_PROBABILITY);
     }
 
     // Abstract methods.
@@ -46,7 +49,7 @@ public abstract class Animal extends Organism
      * @param litterSize The number of births.
      */
     abstract protected void giveBirth(List<Organism> newAnimals, int litterSize);
-
+    
     // Class variables accessor methods.
     
     /**
@@ -67,6 +70,14 @@ public abstract class Animal extends Organism
     protected double getSpreadingPorbability()
     {
         return SPREADING_PROBABILITY;
+    }
+    
+    /**
+     * 
+     */
+    protected double getCureProbability()
+    {
+        return CURE_PROBABILITY;
     }
     
     // Instance fields accessor methods.
@@ -121,8 +132,11 @@ public abstract class Animal extends Organism
                 if(dietContains(organism.toString())) {
                     Organism food = (Organism) organism;
                     if(food.isAlive() && food.isAnimal()) { 
+                        if(food.isInfected()) {
+                            infect();
+                        }
                         food.setDead();
-                        incrementFoodLevel(food.getFoodValue());
+                        incrementFoodLevel(food.getFoodValue());                        
                         return where;
                     }
                 }
@@ -147,6 +161,9 @@ public abstract class Animal extends Organism
                 if(dietContains(organism.toString())) {
                     Organism food = (Organism) organism;
                     if(food.isAlive() && !food.isAnimal()) { 
+                        if(food.isInfected()) {
+                            infect();
+                        }
                         food.decrementVitality();
                         incrementFoodLevel(food.getFoodValue());
                     }

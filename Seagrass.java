@@ -48,7 +48,6 @@ public class Seagrass extends Plant
      */
     public void act(List<Organism> newSeagrass)
     {
-        computeAge();
         if(isAlive()) {
             // Try to reproduce.
             if(canReproduce(REPRODUCTION_AGE, RERODUCTION_PROBABILITY)){
@@ -58,6 +57,8 @@ public class Seagrass extends Plant
             if(getVitality() <= 0){
                 setDead();
             }
+            incrementAge();
+            decideDeath();
         }
     }
 

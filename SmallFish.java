@@ -46,8 +46,8 @@ public class SmallFish extends Animal
         }
         setAgeOfDecay(AGE_OF_DECAY);
         setMaxFoodLevel(MAX_FOOD_LEVEL);
-        setFoodValue(FOOD_VALUE);
         incrementFoodLevel(getMaxFoodLevel());
+        setFoodValue(FOOD_VALUE);
         addDiet("Seagrass");
         setRateOfDecay(RATE_OF_DECAY);
     }   
@@ -59,9 +59,9 @@ public class SmallFish extends Animal
      * @param newSmallFish A list to return newly hatched small fish.
      */
     public void act(List<Organism> newSmallFish)
-    {
-        computeAge();   
+    {   
         if(isAlive()) {
+
             // Try to reproduce.
             if(foundMate()){
                 giveBirth(newSmallFish, litterSize());
@@ -70,7 +70,7 @@ public class SmallFish extends Animal
             findFoodPlant();
             // Try to infect others if it is a carrier of a disease.
             if(checkInfected()){
-             spreadInfection();
+                spreadInfection();
             }
             // Try to move into a free location.
             Location newLocation = getField().freeAdjacentLocation(getLocation());
@@ -81,6 +81,9 @@ public class SmallFish extends Animal
                 // Overcrowding.
                 setDead();
             }
+            incrementAge();
+            decrementFoodLevel();
+            decideDeath();
         }
     }
 

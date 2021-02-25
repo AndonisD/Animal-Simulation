@@ -59,8 +59,6 @@ public class Shark extends Animal
      */
     public void act(List<Organism> newSmallSharks)
     {
-        computeAge();
-        decrementFoodLevel();
         if(isAlive()) {
             // Try to reproduce.
             if(foundMate()){
@@ -84,6 +82,9 @@ public class Shark extends Animal
                 // Overcrowding.
                 setDead();
             }
+            incrementAge();
+            decrementFoodLevel();
+            decideDeath();
         }
     }
 
