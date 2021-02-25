@@ -79,7 +79,7 @@ public abstract class Organism
         rateOfDecay = 0.0;
     }
 
-    // Abstract methods 
+    // Abstract methods. 
     
     /**
      * Make this organism act - that is: make it do
@@ -94,16 +94,6 @@ public abstract class Organism
      */
     abstract protected void spreadInfection();
     
-    // ...
-    
-    /**
-     * 
-     */
-    protected boolean testProbability(double probability)
-    {
-        return getRandom().nextDouble() <= probability;
-    }
-    
     // Class variables accessor methods.
 
     /**
@@ -116,6 +106,20 @@ public abstract class Organism
         return rand;
     }
 
+    // Class variables mutator methods.
+    
+    /**
+     * Return the result of a given probability.
+     * 
+     * @param probability The probability it evaluates.
+     * 
+     * @return The result of a given probability.
+     */
+    protected boolean testProbability(double probability)
+    {
+        return getRandom().nextDouble() <= probability;
+    }
+    
     // Instance fields accessor methods.
 
     /**
