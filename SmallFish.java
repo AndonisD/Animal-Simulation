@@ -14,7 +14,7 @@ public class SmallFish extends Animal
     // The age at which a small fish starts to have a chance of dying of age.
     private static final int AGE_OF_DECAY = 30;
     // The maximum food level a small fish can reach from feeding on a food source.
-    private static final int MAX_FOOD_LEVEL = 9;
+    private static final int MAX_FOOD_LEVEL = 8;
     // The small fish' worth as a food source.
     private static final int FOOD_VALUE = 9;
     // The age at which a small fish can start to breed.
@@ -24,7 +24,7 @@ public class SmallFish extends Animal
     // The likelihood of small fish mating.
     private static final double IMPREGNATION_PROBABILITY = 0.8;
     // The maximum number of births.
-    private static final int MAX_LITTER_SIZE = 4;
+    private static final int MAX_LITTER_SIZE = 2;
     // The minimun of steps before next pregnancy.
     private static final int PREGNANCY_PERIOD = 1;
     // The rate of change of death probability.

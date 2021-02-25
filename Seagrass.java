@@ -38,6 +38,9 @@ public class Seagrass extends Plant
         setVitality(INITIAL_VITALITY);
         setFoodValue(FOOD_VALUE);
         setRateOfDecay(RATE_OF_DECAY);
+        
+        setMaxFoodLevel(1);
+        incrementFoodLevel(1);  //<--change lol
     }
 
     /**

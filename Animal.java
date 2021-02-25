@@ -14,7 +14,7 @@ public abstract class Animal extends Organism
     // The probability of an animal getting a desease.
     private static final double INFECTION_PROBABILITY = 0.001;
     // The probability of an animal spreading tthe desease.
-    private static final double SPREADING_PROBABILITY = 0.05;
+    private static final double SPREADING_PROBABILITY = 0.2;
     // 
     private static final double CURE_PROBABILITY = 0.2;
 

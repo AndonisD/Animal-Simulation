@@ -429,6 +429,7 @@ public abstract class Organism
             field = null;
         }
     }
+    
 
     /**
      * Change the organism's state of life.
@@ -461,15 +462,18 @@ public abstract class Organism
     {
         if(isInfected()) {
             setDead();
+            System.out.print("isInfected");
         }
         else if(getAge() > ageOfDecay) {
             computeDeathProbability(rateOfDecay);
             if(getRandom().nextDouble() <= getDeathProbability()) {
                 setDead();
+                System.out.print("old age");
             }
         }
         else if(foodLevel <= 0) {
             setDead();
+            System.out.print("food level");
         }
     }
 
@@ -575,9 +579,6 @@ public abstract class Organism
     {
         if(testProbability(cureProbability) ) {
             changeInfected();
-        }
-        else {
-            setDead();
         }
     }
 
