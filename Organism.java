@@ -47,7 +47,7 @@ public abstract class Organism
     private double infectionProbability;
     // The probability of an organism passing the disease to another organism.
     private double spreadingProbability;
-    // 
+    // The probability of an organism curing itself from a disease.
     private double cureProbability;
     // The probability of a organism dying.
     private double deathProbability;
@@ -273,7 +273,7 @@ public abstract class Organism
     }
 
     /**
-     * Return the spreading probability of the organism
+     * Return the spreading probability of the organism.
      * 
      * @return The spreading probability of the organism.
      */
@@ -283,7 +283,9 @@ public abstract class Organism
     }
 
     /**
+     * Return the cure probability of the organism.
      * 
+     * @return The cure probability of the organism.
      */
     protected double getCureProbability()
     {
@@ -383,7 +385,9 @@ public abstract class Organism
     }
 
     /**
+     * Set the value of the cure probability field.
      * 
+     * @param cureProbability The probability of an organism curing itself from a disease.
      */
     protected void setCureProbability(double cureProbability)
     {
@@ -429,7 +433,6 @@ public abstract class Organism
             field = null;
         }
     }
-    
 
     /**
      * Change the organism's state of life.
@@ -453,28 +456,6 @@ public abstract class Organism
     protected void incrementAge()
     {
         age++;
-    }
-
-    /**
-     * 
-     */
-    protected void decideDeath()
-    {
-        if(isInfected()) {
-            setDead();
-            System.out.print("isInfected");
-        }
-        else if(getAge() > ageOfDecay) {
-            computeDeathProbability(rateOfDecay);
-            if(getRandom().nextDouble() <= getDeathProbability()) {
-                setDead();
-                System.out.print("old age");
-            }
-        }
-        else if(foodLevel <= 0) {
-            setDead();
-            System.out.print("food level");
-        }
     }
 
     /**
@@ -591,4 +572,23 @@ public abstract class Organism
     {
         deathProbability = deathProbability + rateOfDecay;
     } 
+
+    /**
+     * 
+     */
+    protected void decideDeath()
+    {
+        if(isInfected()) {
+            setDead();
+        }
+        else if(getAge() > ageOfDecay) {
+            computeDeathProbability(rateOfDecay);
+            if(getRandom().nextDouble() <= getDeathProbability()) {
+                setDead();
+            }
+        }
+        else if(foodLevel <= 0) {
+            setDead();
+        }
+    }
 }
