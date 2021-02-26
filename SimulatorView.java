@@ -21,6 +21,9 @@ public class SimulatorView extends JFrame
 
     // Color used for objects that have no defined color.
     private static final Color UNKNOWN_COLOR = Color.gray;
+    
+    //
+    private static final Color INFECTED_COLOR = Color.red;
 
     private final String STEP_PREFIX = "Step: ";
     private final String POPULATION_PREFIX = "Population: ";
@@ -101,7 +104,7 @@ public class SimulatorView extends JFrame
      * @param step Which iteration step it is.
      * @param field The field whose status is to be displayed.
      */
-    public void showStatus(int step, Field field)
+    public void showStatus(int step, Field field, double colorFraction)
     {
         if(!isVisible()) {
             setVisible(true);
@@ -119,14 +122,14 @@ public class SimulatorView extends JFrame
                     stats.incrementCount(animal.getClass());
                     Organism organism = (Organism) animal;
                     if(organism.isInfected()){
-                        fieldView.drawMark(col, row, new Color(255, 0, 0, 255));
+                        fieldView.drawMark(col, row, INFECTED_COLOR);
                     }
                     else{
                         fieldView.drawMark(col, row, getColor(animal.getClass()));
                     }
                 }
                 else {
-                    fieldView.drawMark(col, row, EMPTY_COLOR);
+                    fieldView.drawMark(col, row, computeEmptyColor(colorFraction));
                 }
             }
         }
@@ -134,6 +137,19 @@ public class SimulatorView extends JFrame
 
         population.setText(POPULATION_PREFIX + stats.getPopulationDetails(field));
         fieldView.repaint();
+    }
+    
+    /**
+     *
+     */
+    private Color computeEmptyColor(double fraction){
+        int colorValue = (int) Math.round(255 * fraction);
+        int red = colorValue;
+        int green = colorValue;
+        int blue = colorValue;
+
+        return new Color(red, green, blue, 255);
+
     }
 
     /**

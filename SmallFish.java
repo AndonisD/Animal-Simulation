@@ -24,9 +24,9 @@ public class SmallFish extends Animal
     // The likelihood of small fish mating.
     private static final double IMPREGNATION_PROBABILITY = 0.8;
     // The maximum number of births.
-    private static final int MAX_LITTER_SIZE = 2;
+    private static final int MAX_LITTER_SIZE = 4;
     // The minimun of steps before next pregnancy.
-    private static final int PREGNANCY_PERIOD = 1;
+    private static final int PREGNANCY_PERIOD = 5;
     // The rate of change of death probability.
     private static final double RATE_OF_DECAY = 0.1;
 
