@@ -18,15 +18,15 @@ public class SmallFish extends Animal
     // The small fish' worth as a food source.
     private static final int FOOD_VALUE = 9;
     // The age at which a small fish can start to breed.
-    private static final int BREEDING_AGE = 5;
+    private static final int BREEDING_AGE = 7;
     // The probability of a female meeting a male.
     private static final double MALE_TO_FEMALE_RATIO = 0.5;
     // The likelihood of small fish mating.
     private static final double IMPREGNATION_PROBABILITY = 0.8;
     // The maximum number of births.
-    private static final int MAX_LITTER_SIZE = 4;
+    private static final int MAX_LITTER_SIZE = 7;
     // The minimun of steps before next pregnancy.
-    private static final int PREGNANCY_PERIOD = 5;
+    private static final int PREGNANCY_PERIOD = 2;
     // The rate of change of death probability.
     private static final double RATE_OF_DECAY = 0.1;
 
@@ -64,16 +64,22 @@ public class SmallFish extends Animal
 
             // Try to reproduce.
             if(foundMate()){
-                giveBirth(newSmallFish, litterSize());
+                int litterSize = impregnate(BREEDING_AGE, MAX_LITTER_SIZE, PREGNANCY_PERIOD, 
+                                            IMPREGNATION_PROBABILITY);
+                giveBirth(newSmallFish, litterSize);
             }
             // Try to find one of its food sources.
-            findFoodPlant();
             // Try to infect others if it is a carrier of a disease.
             if(checkInfected()){
                 spreadInfection();
             }
             // Try to move into a free location.
-            Location newLocation = getField().freeAdjacentLocation(getLocation());
+            Location newLocation = findFood();
+            if(newLocation == null) { 
+                // No food found - try to move to a free location.
+                newLocation = getField().freeAdjacentLocation(getLocation());
+            }
+            
             if(newLocation != null) {
                 setLocation(newLocation);
             }
@@ -87,34 +93,5 @@ public class SmallFish extends Animal
         }
     }
 
-    /**
-     * Check whether or not this small fish is to give birth at this step.
-     * New births will be made into free adjacent locations.
-     * 
-     * @param newSmallFish A list to return newly hatched small fish.
-     * @param litterSize The number of births.
-     */
-    protected void giveBirth(List<Organism> newSmallFish, int litterSize)
-    {
-        // New small fish are born into adjacent locations.
-        // Get a list of adjacent free locations.
-        Field field = getField();
-        List<Location> free = field.getFreeAdjacentLocations(getLocation());
-        for(int b = 0; b < litterSize && free.size() > 0; b++) {
-            Location loc = free.remove(0);
-            SmallFish young = new SmallFish(field, loc);
-            newSmallFish.add(young);
-        }
-    }
 
-    /**
-     * Return the generated number, representing the number of births.
-     * 
-     * @return A number representing the number of births.
-     */
-    private int litterSize()
-    {
-        return impregnate(BREEDING_AGE, MAX_LITTER_SIZE, PREGNANCY_PERIOD, 
-                          IMPREGNATION_PROBABILITY);
-    }
 }

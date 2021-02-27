@@ -1,5 +1,6 @@
 import java.util.List;
 import java.util.Iterator;
+import java.lang.reflect.*;
 
 /**
  * An abstract class representing shared characteristics of animals.
@@ -10,7 +11,7 @@ import java.util.Iterator;
 public abstract class Animal extends Organism
 {
     // Characteristics shared by all animals (class variables).
-    
+
     // The probability of an animal getting a desease.
     private static final double INFECTION_PROBABILITY = 0.001;
     // The probability of an animal spreading tthe desease.
@@ -42,16 +43,9 @@ public abstract class Animal extends Organism
 
     // Abstract methods.
 
-    /**
-     * Check whether or not this small fish is to give birth at this step.
-     * 
-     * @param newAnimals A list to return newly born animals.
-     * @param litterSize The number of births.
-     */
-    abstract protected void giveBirth(List<Organism> newAnimals, int litterSize);
-    
+
     // Class variables accessor methods.
-    
+
     /**
      * Return the infection probability.
      * 
@@ -61,7 +55,7 @@ public abstract class Animal extends Organism
     {
         return INFECTION_PROBABILITY;
     }
-    
+
     /**
      * Return the spreading probability.
      * 
@@ -71,7 +65,7 @@ public abstract class Animal extends Organism
     {
         return SPREADING_PROBABILITY;
     }
-    
+
     /**
      * 
      */
@@ -79,7 +73,7 @@ public abstract class Animal extends Organism
     {
         return CURE_PROBABILITY;
     }
-    
+
     // Instance fields accessor methods.
 
     /**
@@ -97,11 +91,11 @@ public abstract class Animal extends Organism
      * 
      * @return True if the animal is female, false otherwise.
      */
-    protected boolean checkFemale()
+    protected boolean isFemale()
     {
         return isFemale;
     }
-    
+
     // Instance fields mutator methods.
 
     /**
@@ -120,56 +114,50 @@ public abstract class Animal extends Organism
      * 
      * @return Where food was found, or null if it wasn't.
      */
-    protected Location findFoodAnimal()
+    protected Location findFood()
     {
         Field field = getField();
         List<Location> adjacent = field.adjacentLocations(getLocation());
         Iterator<Location> it = adjacent.iterator();
         while(it.hasNext()) {
             Location where = it.next();
-            Object organism = field.getObjectAt(where);
-            if(organism != null){
-                if(dietContains(organism.toString())) {
-                    Organism food = (Organism) organism;
-                    if(food.isAlive() && food.isAnimal()) { 
-                        if(food.isInfected()) {
-                            infect();
-                        }
-                        food.setDead();
-                        incrementFoodLevel(food.getFoodValue());                        
-                        return where;
-                    }
-                }
+            Object obj = field.getObjectAt(where);
+            //empty cell
+            if(obj == null){
+                continue;
             }
+            //is not part of the diet
+            if(!dietContains(obj.toString())) {
+                continue;   
+            }
+            //is dead
+            Organism food = (Organism) obj;
+            if(!food.isAlive()) {
+                continue;
+            }
+
+            return eat(food, where);
+
         }
         return null;
     }
 
-    /**
-     * Look for food source adjacent to the current location.
-     * Only the first live food source is eaten.
-     */
-    protected void findFoodPlant()
-    {
-        Field field = getField();
-        List<Location> adjacent = field.adjacentLocations(getLocation());
-        Iterator<Location> it = adjacent.iterator();
-        while(it.hasNext()) {
-            Location where = it.next();
-            Object organism = field.getObjectAt(where);
-            if(organism != null){
-                if(dietContains(organism.toString())) {
-                    Organism food = (Organism) organism;
-                    if(food.isAlive() && !food.isAnimal()) { 
-                        if(food.isInfected()) {
-                            infect();
-                        }
-                        food.decrementVitality();
-                        incrementFoodLevel(food.getFoodValue());
-                    }
-                }
-            }
+    private Location eat(Organism food, Location where){
+        //is infected - get infected
+        if(food.isInfected()) {
+            infect();
         }
+        //is an Animal - kill
+        if(food.isAnimal()) { 
+            food.setDead();                       
+        }
+        //is a Plant - Plants get eaten bit by bit instead of getting killed
+        else{
+            food.decrementVitality();
+            where = null;
+        }
+        incrementFoodLevel(food.getFoodValue());
+        return where;
     }
 
     /**
@@ -185,18 +173,50 @@ public abstract class Animal extends Organism
         Iterator<Location> it = adjacent.iterator();
         while(it.hasNext()) {
             Location where = it.next();
-            Object organism = field.getObjectAt(where);
-            if(organism != null){
-                if(toString().equals(organism.toString())) {
-                    Animal mate = (Animal)organism;
-                    boolean mateGender = mate.checkFemale();
-                    if(mate.isAlive() && checkFemale() == !mateGender) {
-                        return true;
-                    }
-                }
+            Object obj = field.getObjectAt(where);
+            if(obj == null){
+                continue;
+            }
+            if(!toString().equals(obj.toString())) {
+                continue;
+            }
+            Animal mate = (Animal)obj;
+            boolean mateGender = mate.isFemale();
+            if(mate.isAlive() && isFemale() == !mateGender) {
+                return true;
             }
         }
         return false;
+    }
+
+    /**
+     * 
+     * 
+     * @param newAnimals A list to return newly born animals.
+     * @param litterSize The number of births.
+     */
+    protected void giveBirth(List<Organism> newAnimals, int litterSize){
+        if(!isFemale()){
+            return;
+        }
+        
+        Field field = getField();
+        List<Location> free = field.getFreeAdjacentLocations(getLocation());
+        for(int b = 0; b < litterSize && free.size() > 0; b++) {
+            Location loc = free.remove(0);
+            try
+            {
+                //uses Java Reflection to make new instances of the Animal subclass calling the method
+                Constructor<? extends Animal> constructor = getClass().getDeclaredConstructor(Field.class, Location.class);
+                Animal newBorn = constructor.newInstance(getField(), getLocation()) ;
+                newAnimals.add(newBorn);
+            }
+            catch(Exception e)
+            {
+                System.out.println(e);
+                System.out.println("breeding failed");
+            }
+        }
     }
 
     /**
@@ -211,8 +231,12 @@ public abstract class Animal extends Organism
      * @return The number of births (may be zero).
      */
     protected int impregnate(int breedingAge, int maxLitterSize, 
-                             int pregnancyPeriod, double impregnationProbability)
+    int pregnancyPeriod, double impregnationProbability)
     {
+        if(!isFemale()){
+            return 0;
+        }
+        
         int litterSize = 0;
         timeUntilImpregnation--;
         if(canBreed(breedingAge) && getRandom().nextDouble() <= impregnationProbability) {

@@ -14,17 +14,17 @@ public class Shark extends Animal
     // The age at which a shark starts to have a chance of dying of age.
     private static final int AGE_OF_DECAY = 140;
     // The maximum food level a shark can reach from feeding on a food source.
-    private static final int MAX_FOOD_LEVEL = 9;
+    private static final int MAX_FOOD_LEVEL = 16;
     // The age at which a shark can start to breed.
-    private static final int BREEDING_AGE = 15;
+    private static final int BREEDING_AGE = 10;
     // The probability of a female meeting a male.
     private static final double MALE_TO_FEMALE_RATIO = 0.5;
     // The likelihood of sharks mating.
-    private static final double IMPREGNATION_PROBABILITY = 0.2;
+    private static final double IMPREGNATION_PROBABILITY = 0.9;
     // The maximum number of births.
-    private static final int MAX_LITTER_SIZE = 2;
+    private static final int MAX_LITTER_SIZE = 4;
     // The minimun of steps before next pregnancy.
-    private static final int PREGNANCY_PERIOD = 1;   
+    private static final int PREGNANCY_PERIOD = 6;   
     // The rate of change of death probability.
     private static final double RATE_OF_DECAY = 0.1;
 
@@ -62,17 +62,19 @@ public class Shark extends Animal
         if(isAlive()) {
             // Try to reproduce.
             if(foundMate()){
-                giveBirth(newSmallSharks, litterSize());
-            }          
-            // Move towards a source of food if found.
-            Location newLocation = findFoodAnimal();
-            if(newLocation == null) { 
-                // No food found - try to move to a free location.
-                newLocation = getField().freeAdjacentLocation(getLocation());
-            }
+                int litterSize = impregnate(BREEDING_AGE, MAX_LITTER_SIZE, PREGNANCY_PERIOD, 
+                                            IMPREGNATION_PROBABILITY);
+                giveBirth(newSmallSharks, litterSize);
+            }     
             // Try to infect others if it is a carrier of a disease.
             if(checkInfected()) {
                 spreadInfection();
+            }
+            // Move towards a source of food if found.
+            Location newLocation = findFood();
+            if(newLocation == null) { 
+                // No food found - try to move to a free location.
+                newLocation = getField().freeAdjacentLocation(getLocation());
             }
             // See if it was possible to move.
             if(newLocation != null) {
@@ -88,33 +90,5 @@ public class Shark extends Animal
         }
     }
 
-    /**
-     * Check whether or not this shark is to give birth at this step.
-     * New births will be made into free adjacent locations.
-     * 
-     * @param newSmallSharks A list to return newly born sharks.
-     */
-    protected void giveBirth(List<Organism> newSmallSharks, int litterSize)
-    {
-        // New sharks are born into adjacent locations.
-        // Get a list of adjacent free locations.
-        Field field = getField();
-        List<Location> free = field.getFreeAdjacentLocations(getLocation());
-        for(int b = 0; b < litterSize && free.size() > 0; b++) {
-            Location loc = free.remove(0);
-            Shark young = new Shark(field, loc);
-            newSmallSharks.add(young);
-        }
-    }
 
-    /**
-     * Return the generated number, representing the number of births.
-     * 
-     * @return A number representing the number of births.
-     */
-    private int litterSize()
-    {
-        return impregnate(BREEDING_AGE, MAX_LITTER_SIZE, PREGNANCY_PERIOD, 
-                          IMPREGNATION_PROBABILITY);
-    }
 }

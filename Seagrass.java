@@ -14,13 +14,13 @@ public class Seagrass extends Plant
     // The age at which a seagrass starts to have a chance of dying of age.
     private static final int AGE_OF_DECAY = 30;
     // The ability of a seagrass to undertake a specific action.
-    private static final int INITIAL_VITALITY = 3;
+    private static final int INITIAL_VITALITY = 7;
     // The seagrass' worth as a food source.
-    private static final int FOOD_VALUE = 4;
+    private static final int FOOD_VALUE = 2;
     // The age at which a seagrass starts to have a chance of reproducing.
-    private static final int REPRODUCTION_AGE = 1;
+    private static final int REPRODUCTION_AGE = 5;
     // The probability of a seagrass reproducing.
-    private static final double RERODUCTION_PROBABILITY = 0.06;
+    private static final double RERODUCTION_PROBABILITY = 0.05;
     // The rate of change of death probability.
     private static final double RATE_OF_DECAY = 0.1;
 
