@@ -12,23 +12,27 @@ public class SmallFish extends Animal
     // Characteristics shared by all small fish (class variables).
 
     // The age at which a small fish starts to have a chance of dying of age.
-    private static final int AGE_OF_DECAY = 30;
+    private static final int AGE_OF_DECAY = 50;
     // The maximum food level a small fish can reach from feeding on a food source.
-    private static final int MAX_FOOD_LEVEL = 8;
+    private static final int MAX_FOOD_LEVEL = 15;
     // The small fish' worth as a food source.
-    private static final int FOOD_VALUE = 9;
+    private static final int FOOD_VALUE = 8;
     // The age at which a small fish can start to breed.
-    private static final int BREEDING_AGE = 7;
+    private static final int BREEDING_AGE = 8;
     // The probability of a female meeting a male.
     private static final double MALE_TO_FEMALE_RATIO = 0.5;
     // The likelihood of small fish mating.
     private static final double IMPREGNATION_PROBABILITY = 0.8;
     // The maximum number of births.
-    private static final int MAX_LITTER_SIZE = 7;
+    private static final int MAX_LITTER_SIZE = 4;
     // The minimun of steps before next pregnancy.
-    private static final int PREGNANCY_PERIOD = 2;
+    private static final int PREGNANCY_PERIOD = 4;
     // The rate of change of death probability.
     private static final double RATE_OF_DECAY = 0.1;
+    
+    private static final double MAX_TEMP = 50;
+    
+    private static final double MIN_TEMP = 0;
 
     /**
      * Create a new small fish. A small fish is created with age
@@ -50,6 +54,8 @@ public class SmallFish extends Animal
         setFoodValue(FOOD_VALUE);
         addDiet("Seagrass");
         setRateOfDecay(RATE_OF_DECAY);
+        setMaxTemp(MAX_TEMP);
+        setMinTemp(MIN_TEMP);
     }   
 
     /**
@@ -58,40 +64,44 @@ public class SmallFish extends Animal
      * 
      * @param newSmallFish A list to return newly hatched small fish.
      */
-    public void act(List<Organism> newSmallFish)
+    public void act(List<Actor> newActors, boolean isDay, double temperature)
     {   
         if(isAlive()) {
+            if(isDay){
+                // Try to reproduce.
+                if(foundMate()){
+                    int litterSize = impregnate(BREEDING_AGE, MAX_LITTER_SIZE, PREGNANCY_PERIOD, 
+                            IMPREGNATION_PROBABILITY);
+                    giveBirth(newActors, litterSize);
+                }
+                // Try to find one of its food sources.
+                // Try to infect others if it is a carrier of a disease.
+                if(checkInfected()){
+                    spreadInfection();
+                    die(newActors);
+                    return;
+                }
+                // Try to move into a free location.
+                Location newLocation = findFood();
+                if(newLocation == null) { 
+                    // No food found - try to move to a free location.
+                    newLocation = getField().freeAdjacentLocation(getLocation());
+                }
+                if(newLocation != null) {
+                    setLocation(newLocation);
+                }
+                else {
+                    // Overcrowding.
+                    die(newActors);
+                    return;
+                }
+                incrementAge();
+                decrementFoodLevel();
+                decideDeath(temperature);
+            }
 
-            // Try to reproduce.
-            if(foundMate()){
-                int litterSize = impregnate(BREEDING_AGE, MAX_LITTER_SIZE, PREGNANCY_PERIOD, 
-                                            IMPREGNATION_PROBABILITY);
-                giveBirth(newSmallFish, litterSize);
-            }
-            // Try to find one of its food sources.
-            // Try to infect others if it is a carrier of a disease.
-            if(checkInfected()){
-                spreadInfection();
-            }
-            // Try to move into a free location.
-            Location newLocation = findFood();
-            if(newLocation == null) { 
-                // No food found - try to move to a free location.
-                newLocation = getField().freeAdjacentLocation(getLocation());
-            }
-            
-            if(newLocation != null) {
-                setLocation(newLocation);
-            }
-            else {
-                // Overcrowding.
-                setDead();
-            }
-            incrementAge();
-            decrementFoodLevel();
-            decideDeath();
+
         }
     }
-
 
 }

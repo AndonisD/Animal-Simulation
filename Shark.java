@@ -14,9 +14,9 @@ public class Shark extends Animal
     // The age at which a shark starts to have a chance of dying of age.
     private static final int AGE_OF_DECAY = 140;
     // The maximum food level a shark can reach from feeding on a food source.
-    private static final int MAX_FOOD_LEVEL = 16;
+    private static final int MAX_FOOD_LEVEL = 44;
     // The age at which a shark can start to breed.
-    private static final int BREEDING_AGE = 10;
+    private static final int BREEDING_AGE = 15;
     // The probability of a female meeting a male.
     private static final double MALE_TO_FEMALE_RATIO = 0.5;
     // The likelihood of sharks mating.
@@ -44,7 +44,7 @@ public class Shark extends Animal
         }
         setAgeOfDecay(AGE_OF_DECAY);
         setMaxFoodLevel(MAX_FOOD_LEVEL);
-        incrementFoodLevel(getMaxFoodLevel());
+        incrementFoodLevel(getMaxFoodLevel()/2);
         addDiet("SmallFish");
         setRateOfDecay(RATE_OF_DECAY);
     }
@@ -57,14 +57,14 @@ public class Shark extends Animal
      * @param field The field currently occupied.
      * @param newSmallSharks A list to return newly born sharks.
      */
-    public void act(List<Organism> newSmallSharks)
+    public void act(List<Actor> newActors, boolean isDay, double temperature)
     {
         if(isAlive()) {
             // Try to reproduce.
             if(foundMate()){
                 int litterSize = impregnate(BREEDING_AGE, MAX_LITTER_SIZE, PREGNANCY_PERIOD, 
                                             IMPREGNATION_PROBABILITY);
-                giveBirth(newSmallSharks, litterSize);
+                giveBirth(newActors, litterSize);
             }     
             // Try to infect others if it is a carrier of a disease.
             if(checkInfected()) {
@@ -86,7 +86,7 @@ public class Shark extends Animal
             }
             incrementAge();
             decrementFoodLevel();
-            decideDeath();
+            decideDeath(temperature);
         }
     }
 

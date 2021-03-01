@@ -21,15 +21,17 @@ public class SimulatorView extends JFrame
 
     // Color used for objects that have no defined color.
     private static final Color UNKNOWN_COLOR = Color.gray;
-    
+
     //
     private static final Color INFECTED_COLOR = Color.red;
 
     private final String STEP_PREFIX = "Step: ";
     private final String POPULATION_PREFIX = "Population: ";
-    private JLabel stepLabel, population, infoLabel;
+    private final String TEMPERATURE_PREFIX = "Temperature (°C): ";
+    private final String DAYTIME_PREFIX = "Time: ";
+    private JLabel stepLabel, dayTime, temperature, population;
     private FieldView fieldView;
-    
+
     // A map for storing colors for participants in the simulation
     private Map<Class, Color> colors;
     // A statistics object computing and storing simulation information
@@ -47,25 +49,24 @@ public class SimulatorView extends JFrame
 
         setTitle("Fox and Rabbit Simulation");
         stepLabel = new JLabel(STEP_PREFIX, JLabel.CENTER);
-        infoLabel = new JLabel("  ", JLabel.CENTER);
+        temperature = new JLabel(TEMPERATURE_PREFIX, JLabel.CENTER);
+        dayTime = new JLabel(DAYTIME_PREFIX, JLabel.CENTER);
         population = new JLabel(POPULATION_PREFIX, JLabel.CENTER);
-        
-        setLocation(100, 50);
-        
-        fieldView = new FieldView(height, width);
 
+        setLocation(100, 50);
+        fieldView = new FieldView(height, width);
         Container contents = getContentPane();
-        
         JPanel infoPane = new JPanel(new BorderLayout());
-            infoPane.add(stepLabel, BorderLayout.WEST);
-            infoPane.add(infoLabel, BorderLayout.CENTER);
+        infoPane.add(stepLabel, BorderLayout.WEST);
+        infoPane.add(dayTime, BorderLayout.CENTER);
+        infoPane.add(temperature, BorderLayout.EAST);
         contents.add(infoPane, BorderLayout.NORTH);
         contents.add(fieldView, BorderLayout.CENTER);
         contents.add(population, BorderLayout.SOUTH);
         pack();
         setVisible(true);
     }
-    
+
     /**
      * Define a color to be used for a given class of animal.
      * @param animalClass The animal's Class object.
@@ -74,14 +75,6 @@ public class SimulatorView extends JFrame
     public void setColor(Class animalClass, Color color)
     {
         colors.put(animalClass, color);
-    }
-
-    /**
-     * Display a short information label at the top of the window.
-     */
-    public void setInfoText(String text)
-    {
-        infoLabel.setText(text);
     }
 
     /**
@@ -104,29 +97,35 @@ public class SimulatorView extends JFrame
      * @param step Which iteration step it is.
      * @param field The field whose status is to be displayed.
      */
-    public void showStatus(int step, Field field, double colorFraction)
+    public void showStatus(int step, Field field, double colorFraction, String time, double currentTemp)
     {
         if(!isVisible()) {
             setVisible(true);
         }
-            
+
         stepLabel.setText(STEP_PREFIX + step);
         stats.reset();
-        
+
         fieldView.preparePaint();
 
         for(int row = 0; row < field.getDepth(); row++) {
             for(int col = 0; col < field.getWidth(); col++) {
                 Object animal = field.getObjectAt(row, col);
-                if(animal != null && animal instanceof Organism) {
+                if(animal != null && animal instanceof Actor) {
                     stats.incrementCount(animal.getClass());
-                    Organism organism = (Organism) animal;
-                    if(organism.isInfected()){
-                        fieldView.drawMark(col, row, INFECTED_COLOR);
-                    }
-                    else{
+                    if(animal instanceof Corpse){
                         fieldView.drawMark(col, row, getColor(animal.getClass()));
                     }
+                    else{
+                        Organism organism = (Organism) animal;
+                        if(organism.isInfected()){
+                            fieldView.drawMark(col, row, INFECTED_COLOR);
+                        }
+                        else{
+                            fieldView.drawMark(col, row, getColor(animal.getClass()));
+                        }
+                    }
+
                 }
                 else {
                     fieldView.drawMark(col, row, computeEmptyColor(colorFraction));
@@ -135,10 +134,14 @@ public class SimulatorView extends JFrame
         }
         stats.countFinished();
 
+        String temperatureString = String.format("%.2f", currentTemp);
+
         population.setText(POPULATION_PREFIX + stats.getPopulationDetails(field));
+        dayTime.setText(DAYTIME_PREFIX + time);
+        temperature.setText(TEMPERATURE_PREFIX + temperatureString);
         fieldView.repaint();
     }
-    
+
     /**
      *
      */
@@ -160,7 +163,7 @@ public class SimulatorView extends JFrame
     {
         return stats.isViable(field);
     }
-    
+
     /**
      * Provide a graphical view of a rectangular field. This is 
      * a nested class (a class defined inside a class) which
@@ -195,7 +198,7 @@ public class SimulatorView extends JFrame
         public Dimension getPreferredSize()
         {
             return new Dimension(gridWidth * GRID_VIEW_SCALING_FACTOR,
-                                 gridHeight * GRID_VIEW_SCALING_FACTOR);
+                gridHeight * GRID_VIEW_SCALING_FACTOR);
         }
 
         /**
@@ -219,7 +222,7 @@ public class SimulatorView extends JFrame
                 }
             }
         }
-        
+
         /**
          * Paint on grid location on this field in a given color.
          */

@@ -18,17 +18,19 @@ public class Simulator
     private static final int DEFAULT_WIDTH = 120;
     // The default depth of the grid.
     private static final int DEFAULT_DEPTH = 80;
-    //
-    private static final int DEFAULT_CELESTIAL_CYCLE = 1000;
+    // 
+    private static final int DEFAULT_CELESTIAL_CYCLE = 100;
+    // The default daily temperature increase
+    private static final double DEFAULT_TEMP_INCREASE = 1;
     // The probability that a fox will be created in any given grid position.
     private static final double FOX_CREATION_PROBABILITY = 0.02;
     // The probability that a rabbit will be created in any given grid position.
-    private static final double RABBIT_CREATION_PROBABILITY = 0.08;
+    private static final double RABBIT_CREATION_PROBABILITY = 0.1;
     //
     private static final double SEAGRASS_CREATION_PROBABILITY = 0.03;
 
-    // List of animals in the field.
-    private List<Organism> organisms;
+    // List of actors in the field.
+    private List<Actor> actors;
     // The current state of the field.
     private Field field;
     // The current step of the simulation.
@@ -36,9 +38,9 @@ public class Simulator
     // A graphical view of the simulation.
     private SimulatorView view;
 
-    private double timeOfDay;
+    private double dayLight;
 
-    private boolean isNight;
+    private boolean isDay;
 
     private int dayNightCycle;
 
@@ -47,13 +49,21 @@ public class Simulator
     private double timeTracker;
 
     private double halfCycle;
+    
+    private String dayTime;
+    
+    private double temperature;
+    
+    private double dailyTempIncrease;
+    
+    private double stepTempIncrease;
 
     /**
      * Construct a simulation field with default size.
      */
     public Simulator()
     {
-        this(DEFAULT_DEPTH, DEFAULT_WIDTH, DEFAULT_CELESTIAL_CYCLE);
+        this(DEFAULT_DEPTH, DEFAULT_WIDTH, DEFAULT_CELESTIAL_CYCLE, DEFAULT_TEMP_INCREASE);
     }
 
     /**
@@ -61,7 +71,7 @@ public class Simulator
      * @param depth Depth of the field. Must be greater than zero.
      * @param width Width of the field. Must be greater than zero.
      */
-    public Simulator(int depth, int width, int dayNightCycle)
+    public Simulator(int depth, int width, int dayNightCycle, double dailyTempIncrease)
     {
         if(width <= 0 || depth <= 0) {
             System.out.println("The dimensions must be greater than zero.");
@@ -70,7 +80,7 @@ public class Simulator
             width = DEFAULT_WIDTH;
         }
 
-        organisms = new ArrayList<>();
+        actors = new ArrayList<>();
         field = new Field(depth, width);
 
         // Create a view of the state of each location in the field.
@@ -78,17 +88,24 @@ public class Simulator
         view.setColor(SmallFish.class, Color.ORANGE);
         view.setColor(Shark.class, Color.BLUE);
         view.setColor(Seagrass.class, Color.GREEN);
-
-        // Setup a valid starting point.
-        reset();
-
+        view.setColor(Corpse.class, new Color(150, 75, 0, 255));
+        
+        
         //
         this.dayNightCycle = dayNightCycle;
         double denominator = dayNightCycle;
         period = 2/denominator;
-        isNight = false;
-        this.timeTracker = denominator/4;
-        this.halfCycle = denominator/2;
+        this.dailyTempIncrease = dailyTempIncrease;
+        stepTempIncrease = dailyTempIncrease/denominator;
+        System.out.println(stepTempIncrease);
+        isDay = true;
+        dayTime = "day";
+        timeTracker = denominator/4;
+        halfCycle = denominator/2;
+        temperature = 0.0;
+
+        // Setup a valid starting point.
+        reset();
     }
 
     /**
@@ -104,20 +121,23 @@ public class Simulator
      * 
      */
     public void changeDayTime(){
-        isNight = !isNight;
-        if(isNight){
-            System.out.println("night");
+        isDay = !isDay;
+        if(isDay){
+            dayTime = "day";
         }
-        else if(!isNight){
-            System.out.println("day");
+        else if(!isDay){
+            dayTime = "night";
         }
     }
     
     /**
      * 
      */
-    public void computeTimeOfDay(){
-        timeOfDay = 0.375*Math.cos(period*Math.PI*step)+0.625;
+    public void computeDayLight(){
+        double dayNightWave = Math.cos(period*Math.PI*step);
+        dayLight = 0.375*dayNightWave+0.625;
+        double tempIncrease = step*stepTempIncrease;
+        temperature = 5*dayNightWave+15+tempIncrease;
     }
 
     /**
@@ -142,7 +162,7 @@ public class Simulator
     {
         step++;
 
-        computeTimeOfDay();
+        computeDayLight();
 
         if(step == timeTracker){
             changeDayTime();
@@ -150,20 +170,20 @@ public class Simulator
         }
 
         // Provide space for newborn animals.
-        List<Organism> newOrganisms = new ArrayList<>();        
+        List<Actor> newActors = new ArrayList<>();        
         // Let all rabbits act.
-        for(Iterator<Organism> it = organisms.iterator(); it.hasNext(); ) {
-            Organism organism = it.next();
-            organism.act(newOrganisms);
-            if(! organism.isAlive()) {
+        for(Iterator<Actor> it = actors.iterator(); it.hasNext(); ) {
+            Actor actor = it.next();
+            actor.act(newActors, isDay, temperature);
+            if(!actor.isAlive()) {
                 it.remove();
             }
         }
 
         // Add the newly born foxes and rabbits to the main lists.
-        organisms.addAll(newOrganisms);
+        actors.addAll(newActors);
 
-        view.showStatus(step, field, timeOfDay);
+        view.showStatus(step, field, dayLight, dayTime, temperature);
     }
 
     /**
@@ -172,11 +192,11 @@ public class Simulator
     public void reset()
     {
         step = 0;
-        organisms.clear();
+        actors.clear();
         populate();
-        computeTimeOfDay();
+        computeDayLight();
         // Show the starting state in the view.
-        view.showStatus(step, field, timeOfDay);
+        view.showStatus(step, field, dayLight, dayTime, temperature);
     }
 
     /**
@@ -191,17 +211,17 @@ public class Simulator
                 if(rand.nextDouble() <= FOX_CREATION_PROBABILITY) {
                     Location location = new Location(row, col);
                     Shark shark = new Shark(field, location);
-                    organisms.add(shark);
+                    actors.add(shark);
                 }
                 else if(rand.nextDouble() <= RABBIT_CREATION_PROBABILITY) {
                     Location location = new Location(row, col);
                     SmallFish smallFish = new SmallFish(field, location);
-                    organisms.add(smallFish);
+                    actors.add(smallFish);
                 }
                 else if(rand.nextDouble() <= SEAGRASS_CREATION_PROBABILITY) {
                     Location location = new Location(row, col);
                     Seagrass seagrass = new Seagrass(field, location);
-                    organisms.add(seagrass);
+                    actors.add(seagrass);
                 }
                 // else leave the location empty.
             }

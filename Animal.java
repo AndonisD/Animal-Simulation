@@ -10,12 +10,12 @@ import java.lang.reflect.*;
  */
 public abstract class Animal extends Organism
 {
-    // Characteristics shared by all animals (class variables).
+    // Characteristics shared by all animals (class variables);
 
     // The probability of an animal getting a desease.
-    private static final double INFECTION_PROBABILITY = 0.001;
+    private static final double INFECTION_PROBABILITY = 0.0005;
     // The probability of an animal spreading tthe desease.
-    private static final double SPREADING_PROBABILITY = 0.2;
+    private static final double SPREADING_PROBABILITY = 0.5;
     // 
     private static final double CURE_PROBABILITY = 0.2;
 
@@ -41,7 +41,7 @@ public abstract class Animal extends Organism
         setCureProbability(CURE_PROBABILITY);
     }
 
-    // Abstract methods.
+    // Abstract methods.   
 
 
     // Class variables accessor methods.
@@ -135,9 +135,8 @@ public abstract class Animal extends Organism
             if(!food.isAlive()) {
                 continue;
             }
-
+            
             return eat(food, where);
-
         }
         return null;
     }
@@ -195,7 +194,7 @@ public abstract class Animal extends Organism
      * @param newAnimals A list to return newly born animals.
      * @param litterSize The number of births.
      */
-    protected void giveBirth(List<Organism> newAnimals, int litterSize){
+    protected void giveBirth(List<Actor> newActors, int litterSize){
         if(!isFemale()){
             return;
         }
@@ -209,7 +208,7 @@ public abstract class Animal extends Organism
                 //uses Java Reflection to make new instances of the Animal subclass calling the method
                 Constructor<? extends Animal> constructor = getClass().getDeclaredConstructor(Field.class, Location.class);
                 Animal newBorn = constructor.newInstance(getField(), getLocation()) ;
-                newAnimals.add(newBorn);
+                newActors.add(newBorn);
             }
             catch(Exception e)
             {
@@ -270,7 +269,7 @@ public abstract class Animal extends Organism
         while(it.hasNext()) {
             Location where = it.next();
             Object organism = field.getObjectAt(where);
-            if(organism != null){
+            if(organism instanceof Organism){
                 Organism animal = (Organism) organism;
                 if(animal.isAlive() && animal.isAnimal()) { 
                     animal.infect();

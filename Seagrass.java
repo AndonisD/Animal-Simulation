@@ -12,17 +12,21 @@ public class Seagrass extends Plant
     // Characteristics shared by all small fish (class variables).
 
     // The age at which a seagrass starts to have a chance of dying of age.
-    private static final int AGE_OF_DECAY = 30;
+    private static final int AGE_OF_DECAY = 32;
     // The ability of a seagrass to undertake a specific action.
-    private static final int INITIAL_VITALITY = 7;
+    private static final int INITIAL_VITALITY = 4;
     // The seagrass' worth as a food source.
-    private static final int FOOD_VALUE = 2;
+    private static final int FOOD_VALUE = 5;
     // The age at which a seagrass starts to have a chance of reproducing.
     private static final int REPRODUCTION_AGE = 5;
     // The probability of a seagrass reproducing.
-    private static final double RERODUCTION_PROBABILITY = 0.05;
+    private static final double RERODUCTION_PROBABILITY = 0.04;
     // The rate of change of death probability.
     private static final double RATE_OF_DECAY = 0.1;
+    
+    private static final double MAX_TEMP = 30;
+    
+    private static final double MIN_TEMP = 0;
 
     /**
      * Create a new seagrass. A seagrass is created with age of zero.
@@ -49,19 +53,19 @@ public class Seagrass extends Plant
      * 
      * @param newSeagrass A list to return new plants of type seagrass.
      */
-    public void act(List<Organism> newSeagrass)
+    public void act(List<Actor> newActors, boolean isDay, double temperature)
     {
         if(isAlive()) {
             // Try to reproduce.
             if(canReproduce(REPRODUCTION_AGE, RERODUCTION_PROBABILITY)){
-                reproduce(newSeagrass);
+                reproduce(newActors);
             }
             // Tracks the vitality of the plant.
             if(getVitality() <= 0){
                 setDead();
             }
             incrementAge();
-            decideDeath();
+            decideDeath(temperature);
         }
     }
 
@@ -71,13 +75,13 @@ public class Seagrass extends Plant
      * 
      * @param newSeagrass A list to return new plants of type seagrass.
      */
-    protected void reproduce(List<Organism> newSeagrass)
+    protected void reproduce(List<Actor> newActors)
     {
         Field field = getField();
         Location newLocation = field.freeAdjacentLocation(getLocation(), 4);
         if(newLocation != null){
             Seagrass young = new Seagrass(field, newLocation);
-            newSeagrass.add(young);
+            newActors.add(young);
         }
     }
 }

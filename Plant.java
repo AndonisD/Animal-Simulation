@@ -34,7 +34,7 @@ public abstract class Plant extends Organism
      * 
      * @param newPlants A list to return new plants.
      */
-    abstract protected void reproduce(List<Organism> newPlants);
+    abstract protected void reproduce(List<Actor> newActors);
     
     // Class variables accessor methods.
     
