@@ -7,8 +7,10 @@ import java.util.List;
  */
 public class Corpse extends Actor
 {
-    // instance variables - replace the example below with your own
-    private double decompositionProbability;
+    
+    private static final double DECOMPOSITION_PROBABILITY = 0.1;
+    
+    private static final int FOOD_VALUE = 4;
 
     /**
      * Constructor for objects of class Corpse
@@ -16,7 +18,8 @@ public class Corpse extends Actor
     public Corpse(Field field, Location location)
     {
         super(field, location);
-        decompositionProbability = 0.1;
+        setActorName("Corpse");
+        setFoodValue(FOOD_VALUE);
     }
 
     /**
@@ -28,9 +31,8 @@ public class Corpse extends Actor
     public void act(List<Actor> newActors, boolean isDay, double temperature)
     { 
         if(isAlive()){
-            if(getRandom().nextDouble() <= decompositionProbability){
+            if(getRandom().nextDouble() <= DECOMPOSITION_PROBABILITY){
                 setDead();
-                System.out.println("corpse gone");
             }
         }
 

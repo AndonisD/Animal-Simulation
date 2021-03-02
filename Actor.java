@@ -11,12 +11,17 @@ public abstract class Actor
     private static Random rand;
 
     // Characteristics shared by all actors (instance fields).
-    // Whether the organism is alive or not.
-    private boolean alive;
+    
     // The simulation field.
     private Field field;
-    // The organism's position in the field.
+    // The actor's position in the field.
     private Location location;
+    // Whether the actor is alive or not.
+    private boolean alive;
+    // The name of the actor.
+    private String actorName;
+    // The oactor's worth as a food source.
+    private int foodValue;
     
 
     public Actor(Field field, Location location){
@@ -24,6 +29,8 @@ public abstract class Actor
         setLocation(location);
         rand = new Random();
         alive = true;
+        actorName = "Actor";
+        foodValue = 0;
     }
 
     /**
@@ -67,6 +74,37 @@ public abstract class Actor
     {
         return alive;
     }
+    
+    @Override
+    /**
+     * Return the object - organism as a String.
+     * 
+     * @return A String of the organism object.
+     */
+    public String toString()
+    {
+        return actorName;
+    }
+    
+        /**
+     * Return the food value of the organism.
+     * 
+     * @return The food value of the organism.
+     */
+    protected int getFoodValue()
+    {
+        return foodValue;
+    }
+    
+    /**
+     * Set the value of the food value field.
+     * 
+     * @param foodValue The organism's worth as a food source.
+     */
+    protected void setFoodValue(int foodValue)
+    {
+        this.foodValue = foodValue;
+    }
 
     /**
      * Place the organism at the new location in the given field.
@@ -84,13 +122,13 @@ public abstract class Actor
 
     
     /**
-     * Check whether the organism is alive or not.
+     * Set the String value in the species' name field.
      * 
-     * @return True if the organism is still alive, False otherwise.
+     * @param speciesName The name of the species.
      */
-    protected boolean setAlive()
+    protected void setActorName(String actorName)
     {
-        return alive;
+        this.actorName = actorName;
     }
 
     /**
@@ -116,7 +154,6 @@ public abstract class Actor
     protected void leaveCorpse(List<Actor> newActors, Field field, Location location){
         Corpse corpse = new Corpse(field, location);
         newActors.add(corpse);
-        System.out.println("corpse created");
     }
 
 }

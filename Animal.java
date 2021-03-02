@@ -43,9 +43,7 @@ public abstract class Animal extends Organism
 
     // Abstract methods.   
 
-
     // Class variables accessor methods.
-
     /**
      * Return the infection probability.
      * 
@@ -131,30 +129,37 @@ public abstract class Animal extends Organism
                 continue;   
             }
             //is dead
-            Organism food = (Organism) obj;
+            Actor food = (Actor) obj;
             if(!food.isAlive()) {
                 continue;
             }
-            
+
             return eat(food, where);
         }
         return null;
     }
 
-    private Location eat(Organism food, Location where){
-        //is infected - get infected
-        if(food.isInfected()) {
-            infect();
+    /**
+     * 
+     */
+    private Location eat(Actor food, Location where){
+        if(food instanceof Organism){
+            Organism organism = (Organism) food;
+            if(organism.isAnimal()) { 
+                organism.setDead();                       
+            }
+            //is a Plant - Plants get eaten bit by bit instead of getting killed
+            else{
+                organism.decrementVitality();
+                where = null;
+            }
         }
-        //is an Animal - kill
-        if(food.isAnimal()) { 
-            food.setDead();                       
-        }
-        //is a Plant - Plants get eaten bit by bit instead of getting killed
         else{
-            food.decrementVitality();
-            where = null;
+            food.setDead(); 
         }
+
+        //is an Animal - kill
+
         incrementFoodLevel(food.getFoodValue());
         return where;
     }
@@ -198,7 +203,7 @@ public abstract class Animal extends Organism
         if(!isFemale()){
             return;
         }
-        
+
         Field field = getField();
         List<Location> free = field.getFreeAdjacentLocations(getLocation());
         for(int b = 0; b < litterSize && free.size() > 0; b++) {
@@ -234,7 +239,7 @@ public abstract class Animal extends Organism
         if(!isFemale()){
             return 0;
         }
-        
+
         int litterSize = 0;
         timeUntilImpregnation--;
         if(canBreed(breedingAge) && getRandom().nextDouble() <= impregnationProbability) {
@@ -267,9 +272,9 @@ public abstract class Animal extends Organism
         Iterator<Location> it = adjacent.iterator();
         while(it.hasNext()) {
             Location where = it.next();
-            Object organism = field.getObjectAt(where);
-            if(organism instanceof Organism){
-                Organism animal = (Organism) organism;
+            Object obj = field.getObjectAt(where);
+            if(obj instanceof Organism){
+                Organism animal = (Organism) obj;
                 if(animal.isAlive() && animal.isAnimal()) { 
                     animal.infect();
                 }

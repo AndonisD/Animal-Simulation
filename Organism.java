@@ -16,8 +16,7 @@ public abstract class Organism extends Actor
     
     // The kingdom that the organism represents.
     private boolean isAnimal;
-    // The name of the distinct species.
-    private String speciesName;    
+        
     // The organism's age.
     private int age;
     // The age at which a shark starts to have a chance of dying of age.
@@ -30,8 +29,6 @@ public abstract class Organism extends Actor
     private int foodLevel;
     // The organism's maximum food level.
     private int maxFoodLevel;
-    // The organism's worth as a food source.
-    private int foodValue;
     // Whether the organism is infected or not.
     private boolean isInfected;
     // The probability of an organism getting infected by a disease
@@ -48,7 +45,7 @@ public abstract class Organism extends Actor
     private double minTemp;
     // The maximum temperature under which the organism can survive
     private double maxTemp;
-    //
+    // The probability of leaving a corpse after dying
     private double corpseProbability;
 
     /**
@@ -61,14 +58,12 @@ public abstract class Organism extends Actor
     {
         super(field, location);
         isAnimal = true;
-        speciesName = "";
         age = 0;
         ageOfDecay = 0;
         vitality = 0;
         diet = new HashSet<>();
         foodLevel = 0;
         maxFoodLevel = 0;
-        foodValue = 0;
         isInfected = false;
         infectionProbability = 0.0;
         spreadingProbability = 0.0;
@@ -108,16 +103,7 @@ public abstract class Organism extends Actor
         return isAnimal;
     }
 
-    @Override
-    /**
-     * Return the object - organism as a String.
-     * 
-     * @return A String of the organism object.
-     */
-    public String toString()
-    {
-        return speciesName;
-    }
+    
 
     /**
      * Return the age of the organism.
@@ -168,7 +154,7 @@ public abstract class Organism extends Actor
     /**
      * Return the set holding the organism's diet.
      * 
-     * @return The set holding the otganism's diet.
+     * @return The set holding the organism's diet.
      */
     protected HashSet<String> getDiet()
     {
@@ -206,15 +192,7 @@ public abstract class Organism extends Actor
         return maxFoodLevel;
     }
 
-    /**
-     * Return the food value of the organism.
-     * 
-     * @return The food value of the organism.
-     */
-    protected int getFoodValue()
-    {
-        return foodValue;
-    }
+
 
     /**
      * Return whether the organism has been infected by a disease.
@@ -289,15 +267,7 @@ public abstract class Organism extends Actor
         
     }
 
-    /**
-     * Set the String value in the species' name field.
-     * 
-     * @param speciesName The name of the species.
-     */
-    protected void setSpeciesName(String speciesName)
-    {
-        this.speciesName = speciesName;
-    }
+    
 
     /**
      * Set the value to the food value field.
@@ -345,15 +315,7 @@ public abstract class Organism extends Actor
         this.maxFoodLevel = maxFoodLevel;
     }
 
-    /**
-     * Set the value of the food value field.
-     * 
-     * @param foodValue The organism's worth as a food source.
-     */
-    protected void setFoodValue(int foodValue)
-    {
-        this.foodValue = foodValue;
-    }
+    
 
     /**
      * Set the value of the infection probability field.
@@ -421,6 +383,16 @@ public abstract class Organism extends Actor
         vitality--;
     }
 
+    /**
+     * Add a food source to the set of diet of an ogranism.
+     * 
+     * @param food The food that an ogranism can consume.
+     */
+    protected void setDiet(List<String> diet)
+    {
+        this.diet = new HashSet<>(diet);
+    }
+    
     /**
      * Add a food source to the set of diet of an ogranism.
      * 

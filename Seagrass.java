@@ -37,7 +37,7 @@ public class Seagrass extends Plant
     public Seagrass(Field field, Location location)
     {
         super(field, location);
-        setSpeciesName("Seagrass");
+        setActorName("Seagrass");
         setAgeOfDecay(AGE_OF_DECAY);
         setVitality(INITIAL_VITALITY);
         setFoodValue(FOOD_VALUE);

@@ -2,13 +2,13 @@ import java.util.List;
 import java.util.Arrays;
 
 /**
- * A simple model of a Shark.
+ * A simple model of a Dolphin.
  * Sharks age, move, feed, mate, breed and die.
  * 
  * @author David J. Barnes, Michael Kölling, Ivan Arabadzhiev and Adonis Daskalopulos
  * @version 2021.03.03
  */
-public class Shark extends Animal
+public class Dolphin extends Animal
 {
     // Characteristics shared by all Sharks (class variables).
 
@@ -29,7 +29,7 @@ public class Shark extends Animal
     // The rate of change of death probability.
     private static final double RATE_OF_DECAY = 0.1;
     // The animal's food source(s)
-    private static final List<String> DEFAULT_DIET = Arrays.asList("SmallFish", "Turtle");
+    private static final List<String> DEFAULT_DIET = Arrays.asList("SmallFish", "Crab");
 
     /**
      * Create a shark. A shark can be created as a new born (age zero
@@ -38,10 +38,10 @@ public class Shark extends Animal
      * @param field The field currently occupied.
      * @param location The location within the field.
      */
-    public Shark(Field field, Location location)
+    public Dolphin(Field field, Location location)
     {
         super(field, location);
-        setActorName("Shark");
+        setActorName("Dolphin");
         if(getRandom().nextDouble() <= MALE_TO_FEMALE_RATIO){
             changeGender();
         }

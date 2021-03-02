@@ -2,26 +2,26 @@ import java.util.List;
 import java.util.Arrays;
 
 /**
- * A simple model of a Shark.
+ * A simple model of a Turtle.
  * Sharks age, move, feed, mate, breed and die.
  * 
  * @author David J. Barnes, Michael Kölling, Ivan Arabadzhiev and Adonis Daskalopulos
  * @version 2021.03.03
  */
-public class Shark extends Animal
+public class Turtle extends Animal
 {
     // Characteristics shared by all Sharks (class variables).
 
     // The age at which a shark starts to have a chance of dying of age.
     private static final int AGE_OF_DECAY = 200;
     // The maximum food level a shark can reach from feeding on a food source.
-    private static final int MAX_FOOD_LEVEL = 80;
+    private static final int MAX_FOOD_LEVEL = 60;
     // The age at which a shark can start to breed.
-    private static final int BREEDING_AGE = 25;
+    private static final int BREEDING_AGE = 18;
     // The probability of a female meeting a male.
     private static final double MALE_TO_FEMALE_RATIO = 0.5;
     // The likelihood of sharks mating.
-    private static final double IMPREGNATION_PROBABILITY = 0.3;
+    private static final double IMPREGNATION_PROBABILITY = 0.4;
     // The maximum number of births.
     private static final int MAX_LITTER_SIZE = 4;
     // The minimun of steps before next pregnancy.
@@ -29,7 +29,7 @@ public class Shark extends Animal
     // The rate of change of death probability.
     private static final double RATE_OF_DECAY = 0.1;
     // The animal's food source(s)
-    private static final List<String> DEFAULT_DIET = Arrays.asList("SmallFish", "Turtle");
+    private static final List<String> DEFAULT_DIET = Arrays.asList("Crab", "Seagrass");
 
     /**
      * Create a shark. A shark can be created as a new born (age zero
@@ -38,10 +38,10 @@ public class Shark extends Animal
      * @param field The field currently occupied.
      * @param location The location within the field.
      */
-    public Shark(Field field, Location location)
+    public Turtle(Field field, Location location)
     {
         super(field, location);
-        setActorName("Shark");
+        setActorName("Turtle");
         if(getRandom().nextDouble() <= MALE_TO_FEMALE_RATIO){
             changeGender();
         }

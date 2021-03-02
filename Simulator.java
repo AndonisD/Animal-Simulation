@@ -19,15 +19,22 @@ public class Simulator
     // The default depth of the grid.
     private static final int DEFAULT_DEPTH = 80;
     // 
-    private static final int DEFAULT_CELESTIAL_CYCLE = 100;
+    private static final int DEFAULT_DAYNIGHT_CYCLE = 100;
     // The default daily temperature increase
     private static final double DEFAULT_TEMP_INCREASE = 1;
-    // The probability that a fox will be created in any given grid position.
-    private static final double FOX_CREATION_PROBABILITY = 0.02;
-    // The probability that a rabbit will be created in any given grid position.
-    private static final double RABBIT_CREATION_PROBABILITY = 0.1;
+    // The probability that a sark will be created in any given grid position.
+    private static final double SHARK_CREATION_PROBABILITY = 0.015;
+    //
+    private static final double TURTLE_CREATION_PROBABILITY = 0.02;
+    //
+    private static final double DOLPHIN_CREATION_PROBABILITY = 0.015;
+    // The probability that a small fish will be created in any given grid position.
+    private static final double SMALLFISH_CREATION_PROBABILITY = 0.1;
+    //
+    private static final double CRAB_CREATION_PROBABILITY = 0.07;
     //
     private static final double SEAGRASS_CREATION_PROBABILITY = 0.03;
+    //
     private static final double ALGAE_CREATION_PROBABILITY = 0.03;
 
     // List of actors in the field.
@@ -64,7 +71,7 @@ public class Simulator
      */
     public Simulator()
     {
-        this(DEFAULT_DEPTH, DEFAULT_WIDTH, DEFAULT_CELESTIAL_CYCLE, DEFAULT_TEMP_INCREASE);
+        this(DEFAULT_DEPTH, DEFAULT_WIDTH, DEFAULT_DAYNIGHT_CYCLE, DEFAULT_TEMP_INCREASE);
     }
 
     /**
@@ -86,10 +93,13 @@ public class Simulator
 
         // Create a view of the state of each location in the field.
         view = new SimulatorView(depth, width);
-        view.setColor(SmallFish.class, Color.ORANGE);
+        view.setColor(Crab.class, Color.YELLOW);
         view.setColor(Shark.class, Color.BLUE);
+        view.setColor(Turtle.class, Color.ORANGE);
+        view.setColor(SmallFish.class, new Color(102, 255, 255, 255));
+        view.setColor(Dolphin.class, new Color(178, 102, 255, 255));
         view.setColor(Seagrass.class, new Color(17, 156, 2, 255));
-        view.setColor(Algae.class, new Color(176, 255, 167, 255));
+        view.setColor(Algae.class, new Color(0, 255, 145, 255));
         view.setColor(Corpse.class, new Color(150, 75, 0, 255));
         
         
@@ -151,7 +161,7 @@ public class Simulator
     {
         for(int step = 1; step <= numSteps && view.isViable(field); step++) {
             simulateOneStep();
-            //delay(60);   // uncomment this to run more slowly
+            delay(60);   // uncomment this to run more slowly
         }
     }
 
@@ -213,15 +223,30 @@ public class Simulator
         field.clear();
         for(int row = 0; row < field.getDepth(); row++) {
             for(int col = 0; col < field.getWidth(); col++) {
-                if(rand.nextDouble() <= FOX_CREATION_PROBABILITY) {
+                if(rand.nextDouble() <= SHARK_CREATION_PROBABILITY) {
                     Location location = new Location(row, col);
                     Shark shark = new Shark(field, location);
                     actors.add(shark);
                 }
-                else if(rand.nextDouble() <= RABBIT_CREATION_PROBABILITY) {
+                else if(rand.nextDouble() <= TURTLE_CREATION_PROBABILITY) {
+                    Location location = new Location(row, col);
+                    Turtle turtle = new Turtle(field, location);
+                    actors.add(turtle);
+                }
+                else if(rand.nextDouble() <= DOLPHIN_CREATION_PROBABILITY) {
+                    Location location = new Location(row, col);
+                    Dolphin dolphin = new Dolphin(field, location);
+                    actors.add(dolphin);
+                }
+                else if(rand.nextDouble() <= SMALLFISH_CREATION_PROBABILITY) {
                     Location location = new Location(row, col);
                     SmallFish smallFish = new SmallFish(field, location);
                     actors.add(smallFish);
+                }
+                else if(rand.nextDouble() <= CRAB_CREATION_PROBABILITY) {
+                    Location location = new Location(row, col);
+                    Crab crab = new Crab(field, location);
+                    actors.add(crab);
                 }
                 else if(rand.nextDouble() <= SEAGRASS_CREATION_PROBABILITY) {
                     Location location = new Location(row, col);

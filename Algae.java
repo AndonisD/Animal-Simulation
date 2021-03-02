@@ -19,7 +19,7 @@ public class Algae extends Plant
     // The age at which a seagrass starts to have a chance of reproducing.
     private static final int REPRODUCTION_AGE = 5;
     // The probability of a seagrass reproducing.
-    private static final double RERODUCTION_PROBABILITY = 0.06;
+    private static final double RERODUCTION_PROBABILITY = 0.08;
     // The rate of change of death probability.
     private static final double RATE_OF_DECAY = 0.1;
     
@@ -33,7 +33,7 @@ public class Algae extends Plant
     public Algae(Field field, Location location)
     {
         super(field, location);
-        setSpeciesName("Algae");
+        setActorName("Algae");
         setAgeOfDecay(AGE_OF_DECAY);
         setVitality(INITIAL_VITALITY);
         setFoodValue(FOOD_VALUE);

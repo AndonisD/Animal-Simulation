@@ -9,7 +9,7 @@ import java.util.Arrays;
  * @author David J. Barnes, Michael Kölling, Ivan Arabadzhiev, Adonis Daskalopulos
  * @version 2021.03.03
  */
-public class SmallFish extends Animal
+public class Crab extends Animal
 {
     // Characteristics shared by all small fish (class variables).
 
@@ -20,15 +20,15 @@ public class SmallFish extends Animal
     // The small fish' worth as a food source.
     private static final int FOOD_VALUE = 8;
     // The age at which a small fish can start to breed.
-    private static final int BREEDING_AGE = 3;
+    private static final int BREEDING_AGE = 6;
     // The probability of a female meeting a male.
     private static final double MALE_TO_FEMALE_RATIO = 0.5;
     // The likelihood of small fish mating.
-    private static final double IMPREGNATION_PROBABILITY = 1.0;
+    private static final double IMPREGNATION_PROBABILITY = 0.8;
     // The maximum number of births.
-    private static final int MAX_LITTER_SIZE = 7;
+    private static final int MAX_LITTER_SIZE = 6;
     // The minimun of steps before next pregnancy.
-    private static final int PREGNANCY_PERIOD = 2;
+    private static final int PREGNANCY_PERIOD = 5;
     // The rate of change of death probability.
     private static final double RATE_OF_DECAY = 0.1;
     
@@ -36,7 +36,7 @@ public class SmallFish extends Animal
     
     private static final double MIN_TEMP = 0;
     
-    private static final List<String> DEFAULT_DIET = Arrays.asList("Seagrass", "Algae");
+    private static final List<String> DEFAULT_DIET = Arrays.asList("Algae", "Corpse", "SmallFish");
 
     /**
      * Create a new small fish. A small fish is created with age
@@ -45,10 +45,10 @@ public class SmallFish extends Animal
      * @param field The field currently occupied.
      * @param location The location within the field.
      */
-    public SmallFish(Field field, Location location)
+    public Crab(Field field, Location location)
     {
         super(field, location);
-        setActorName("SmallFish");
+        setActorName("Crab");
         if(getRandom().nextDouble() <= MALE_TO_FEMALE_RATIO){
             changeGender();
         }
