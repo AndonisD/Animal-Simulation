@@ -24,7 +24,7 @@ public class SmallFish extends Animal
     // The likelihood of small fish mating.
     private static final double IMPREGNATION_PROBABILITY = 0.8;
     // The maximum number of births.
-    private static final int MAX_LITTER_SIZE = 4;
+    private static final int MAX_LITTER_SIZE = 7;
     // The minimun of steps before next pregnancy.
     private static final int PREGNANCY_PERIOD = 4;
     // The rate of change of death probability.
@@ -53,6 +53,7 @@ public class SmallFish extends Animal
         incrementFoodLevel(getMaxFoodLevel());
         setFoodValue(FOOD_VALUE);
         addDiet("Seagrass");
+        addDiet("Algae");
         setRateOfDecay(RATE_OF_DECAY);
         setMaxTemp(MAX_TEMP);
         setMinTemp(MIN_TEMP);
@@ -78,8 +79,8 @@ public class SmallFish extends Animal
                 // Try to infect others if it is a carrier of a disease.
                 if(checkInfected()){
                     spreadInfection();
-                    die(newActors);
-                    return;
+                    //die(newActors);
+                    //return;
                 }
                 // Try to move into a free location.
                 Location newLocation = findFood();
@@ -97,7 +98,7 @@ public class SmallFish extends Animal
                 }
                 incrementAge();
                 decrementFoodLevel();
-                decideDeath(temperature);
+                decideDeath(temperature, newActors);
             }
 
 

@@ -207,13 +207,12 @@ public abstract class Animal extends Organism
             {
                 //uses Java Reflection to make new instances of the Animal subclass calling the method
                 Constructor<? extends Animal> constructor = getClass().getDeclaredConstructor(Field.class, Location.class);
-                Animal newBorn = constructor.newInstance(getField(), getLocation()) ;
+                Animal newBorn = constructor.newInstance(getField(), loc) ;
                 newActors.add(newBorn);
             }
             catch(Exception e)
             {
                 System.out.println(e);
-                System.out.println("breeding failed");
             }
         }
     }

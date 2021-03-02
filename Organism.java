@@ -10,7 +10,7 @@ public abstract class Organism extends Actor
 {
     //
     //
-    private static double CORPSE_PROBABILITY = 0.05;
+    private static double CORPSE_PROBABILITY = 0.1;
     
     // Characteristics shared by all organisms (instance fields).
     
@@ -283,7 +283,10 @@ public abstract class Organism extends Actor
         Field field = getField();
      
         setDead();
-        leaveCorpse(newActors, field, location);
+        if(testProbability(corpseProbability)){
+            leaveCorpse(newActors, field, location);
+        }
+        
     }
 
     /**
@@ -495,7 +498,7 @@ public abstract class Organism extends Actor
     protected boolean checkInfected()
     {
         if(isInfected) {
-            cureOrDie();
+            //cureOrDie();
             return true;
         }
         else if(testProbability(infectionProbability)){
@@ -528,7 +531,7 @@ public abstract class Organism extends Actor
     /**
      * 
      */
-    protected void decideDeath(double temp)
+    protected void decideDeath(double temp, List<Actor> newActors)
     {
         if(isInfected()) {
             setDead();

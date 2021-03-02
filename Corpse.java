@@ -16,7 +16,7 @@ public class Corpse extends Actor
     public Corpse(Field field, Location location)
     {
         super(field, location);
-        decompositionProbability = 0.01;
+        decompositionProbability = 0.1;
     }
 
     /**

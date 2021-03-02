@@ -28,6 +28,7 @@ public class Simulator
     private static final double RABBIT_CREATION_PROBABILITY = 0.1;
     //
     private static final double SEAGRASS_CREATION_PROBABILITY = 0.03;
+    private static final double ALGAE_CREATION_PROBABILITY = 0.03;
 
     // List of actors in the field.
     private List<Actor> actors;
@@ -87,7 +88,8 @@ public class Simulator
         view = new SimulatorView(depth, width);
         view.setColor(SmallFish.class, Color.ORANGE);
         view.setColor(Shark.class, Color.BLUE);
-        view.setColor(Seagrass.class, Color.GREEN);
+        view.setColor(Seagrass.class, new Color(17, 156, 2, 255));
+        view.setColor(Algae.class, new Color(176, 255, 167, 255));
         view.setColor(Corpse.class, new Color(150, 75, 0, 255));
         
         
@@ -149,7 +151,7 @@ public class Simulator
     {
         for(int step = 1; step <= numSteps && view.isViable(field); step++) {
             simulateOneStep();
-            delay(60);   // uncomment this to run more slowly
+            //delay(60);   // uncomment this to run more slowly
         }
     }
 
@@ -194,7 +196,10 @@ public class Simulator
         step = 0;
         actors.clear();
         populate();
+        isDay = true;
         computeDayLight();
+        double denominator = dayNightCycle;
+        timeTracker = denominator/4;
         // Show the starting state in the view.
         view.showStatus(step, field, dayLight, dayTime, temperature);
     }
@@ -222,6 +227,11 @@ public class Simulator
                     Location location = new Location(row, col);
                     Seagrass seagrass = new Seagrass(field, location);
                     actors.add(seagrass);
+                }
+                else if(rand.nextDouble() <= ALGAE_CREATION_PROBABILITY) {
+                    Location location = new Location(row, col);
+                    Algae algae = new Algae(field, location);
+                    actors.add(algae);
                 }
                 // else leave the location empty.
             }

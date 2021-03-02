@@ -1,5 +1,6 @@
 import java.util.List;
 import java.util.Iterator;
+import java.lang.reflect.*;
 
 /**
  * An abstract class representing shared characteristics of plants.
@@ -26,15 +27,6 @@ public abstract class Plant extends Organism
         changeKingdom();
         setInfectionProbability(INFECTION_PROBABILITY);
     }
-
-    // Abstract methods.
-    
-    /**
-     * Check whether or not this plant is to reproduce at this step.
-     * 
-     * @param newPlants A list to return new plants.
-     */
-    abstract protected void reproduce(List<Actor> newActors);
     
     // Class variables accessor methods.
     
@@ -62,5 +54,30 @@ public abstract class Plant extends Organism
     protected boolean canReproduce(int reproductionAge, double reproductionProbability)
     {
         return getAge() >= reproductionAge && getRandom().nextDouble() <= reproductionProbability;
+    }
+    
+    /**
+     * Check whether or not this seagrass is to reproduce at this step.
+     * New individuals will be made into free adjacent locations.
+     * 
+     * @param newSeagrass A list to return new plants of type seagrass.
+     */
+    protected void reproduce(List<Actor> newActors)
+    {
+        Field field = getField();
+        Location newLocation = field.freeAdjacentLocation(getLocation(), 4);
+        if(newLocation != null){
+            try
+            {
+                //uses Java Reflection to make new instances of the Animal subclass calling the method
+                Constructor<? extends Plant> constructor = getClass().getDeclaredConstructor(Field.class, Location.class);
+                Plant newPlant = constructor.newInstance(getField(), newLocation) ;
+                newActors.add(newPlant);
+            }
+            catch(Exception e)
+            {
+                System.out.println(e);
+            }
+        }
     }
 }

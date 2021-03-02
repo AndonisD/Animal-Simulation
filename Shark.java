@@ -16,7 +16,7 @@ public class Shark extends Animal
     // The maximum food level a shark can reach from feeding on a food source.
     private static final int MAX_FOOD_LEVEL = 44;
     // The age at which a shark can start to breed.
-    private static final int BREEDING_AGE = 15;
+    private static final int BREEDING_AGE = 14;
     // The probability of a female meeting a male.
     private static final double MALE_TO_FEMALE_RATIO = 0.5;
     // The likelihood of sharks mating.
@@ -82,11 +82,11 @@ public class Shark extends Animal
             }
             else {
                 // Overcrowding.
-                setDead();
+                die(newActors);
             }
             incrementAge();
             decrementFoodLevel();
-            decideDeath(temperature);
+            decideDeath(temperature, newActors);
         }
     }
 
