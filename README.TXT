@@ -12,20 +12,12 @@ Overview: This project is a predator-prey simulation involving many different an
 
 
 Attempted tasks:    Base tasks - all attempted (4/4)
-                    Challenge tasks - all attempted (3/3)
-                    Self-assigned challenge tasks - (6/-)
+                    Challenge tasks - (2/3)
+                    Self-assigned challenge tasks - (2/-)
                     
-Self-assigned tasks:    1 - 
-                        
-                        2 -
-                        
-                        3 - 
-                        
-                        4 - 
-                        
-                        5 - 
-                        
-                        6 - 
+Self-assigned tasks:    1 - Dead Organisms (Corpses) - 
+
+                        2 - Climate Change (Temperature) - 
                     
 
 To start:
