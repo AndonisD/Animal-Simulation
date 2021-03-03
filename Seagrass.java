@@ -25,6 +25,8 @@ public class Seagrass extends Plant
     private static final int REPRODUCTION_AGE = 5;
     // The probability of a seagrass reproducing.
     private static final double RERODUCTION_PROBABILITY = 0.04;
+    // The number of cells that dictate how far seagrass can create an offspring. 
+    private static final int RERODUCTION_RANGE = 5;
     // The rate of change of death probability.
     private static final double RATE_OF_DECAY = 0.1;
 
@@ -42,6 +44,7 @@ public class Seagrass extends Plant
         setVitality(INITIAL_VITALITY);
         setFoodValue(FOOD_VALUE);
         setRateOfDecay(RATE_OF_DECAY);
+        setReproductionRange(RERODUCTION_RANGE);
     }
 
     /**

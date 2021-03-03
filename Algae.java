@@ -28,6 +28,8 @@ public class Algae extends Plant
     // The rate of change of death probability.
     private static final double RATE_OF_DECAY = 0.1;
     
+    
+    
     /**
      * Create a new algae. A algae is created with age of zero.
      * 

@@ -12,8 +12,13 @@ public abstract class Plant extends Organism
 {
     // Characteristics shared by all animals (class variables).
     
-    // The probability of an animal getting a desease.
+    // The probability of a plant getting infected.
     private static final double INFECTION_PROBABILITY = 0.01;
+    
+    // Characteristics shared by all animals (instance fields).
+    
+    //
+    private int reproductionRange;
     
     /**
      * Create a new plant at a location in field.
@@ -26,6 +31,7 @@ public abstract class Plant extends Organism
         super(field, location);
         changeKingdom();
         setInfectionProbability(INFECTION_PROBABILITY);
+        reproductionRange = 1;
     }
     
     // Generic methods.
@@ -39,7 +45,7 @@ public abstract class Plant extends Organism
     protected void reproduce(List<Actor> newActors)
     {
         Field field = getField();
-        Location newLocation = field.freeAdjacentLocation(getLocation(), 4);
+        Location newLocation = field.freeAdjacentLocation(getLocation(), reproductionRange);
         if(newLocation != null){
             try
             {
@@ -79,5 +85,17 @@ public abstract class Plant extends Organism
     protected double getInfectionProbability()
     {
         return INFECTION_PROBABILITY;
+    }
+    
+    // Class variables mutator methods.
+    
+    /**
+     * Set the reproduction range.
+     * 
+     * @param range The reproduction range.
+     */
+    protected void setReproductionRange(int range)
+    {
+        reproductionRange = range;
     }
 }
