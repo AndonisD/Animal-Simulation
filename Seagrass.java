@@ -17,16 +17,16 @@ public class Seagrass extends Plant
     private static final int INITIAL_VITALITY = 4;
     // The seagrass' worth as a food source.
     private static final int FOOD_VALUE = 5;
+    // The maximum temperature of a seagrass living in its surrounding.
+    private static final double MAX_TEMP = 30;
+    // The minimum temperature of a seagrass living in its surrounding.
+    private static final double MIN_TEMP = 0;
     // The age at which a seagrass starts to have a chance of reproducing.
     private static final int REPRODUCTION_AGE = 5;
     // The probability of a seagrass reproducing.
     private static final double RERODUCTION_PROBABILITY = 0.04;
     // The rate of change of death probability.
     private static final double RATE_OF_DECAY = 0.1;
-    
-    private static final double MAX_TEMP = 30;
-    
-    private static final double MIN_TEMP = 0;
 
     /**
      * Create a new seagrass. A seagrass is created with age of zero.
@@ -42,9 +42,6 @@ public class Seagrass extends Plant
         setVitality(INITIAL_VITALITY);
         setFoodValue(FOOD_VALUE);
         setRateOfDecay(RATE_OF_DECAY);
-        
-        setMaxFoodLevel(1);
-        incrementFoodLevel(1);  //<--change lol
     }
 
     /**
@@ -52,6 +49,8 @@ public class Seagrass extends Plant
      * It will reproduce and die of old age.
      * 
      * @param newSeagrass A list to return new plants of type seagrass.
+     * @param isDay The time of day.
+     * @param temperature The temperature of the surrounding.
      */
     public void act(List<Actor> newActors, boolean isDay, double temperature)
     {
@@ -65,8 +64,7 @@ public class Seagrass extends Plant
                 setDead();
             }
             incrementAge();
-            decideDeath(temperature, newActors);
+            decideDeath(newActors, temperature);
         }
     }
-
 }

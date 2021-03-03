@@ -28,33 +28,7 @@ public abstract class Plant extends Organism
         setInfectionProbability(INFECTION_PROBABILITY);
     }
     
-    // Class variables accessor methods.
-    
-    /**
-     * Return the infection probability.
-     * 
-     * @return The infection probability.
-     */
-    protected double getInfectionProbability()
-    {
-        return INFECTION_PROBABILITY;
-    }
-    
-    // Mutator methods, describing action or process.
-
-    /**
-     * A plant can reproduce if it has reached its reproducing age 
-     * and their reproduction probability allows it.
-     * 
-     * @param reproductionAge The minimum age at which a plant can start reproducing.
-     * @param reproductionProbability The probability of a plant reproducing.
-     * 
-     * @return true if the animal can breed, false otherwise.
-     */
-    protected boolean canReproduce(int reproductionAge, double reproductionProbability)
-    {
-        return getAge() >= reproductionAge && getRandom().nextDouble() <= reproductionProbability;
-    }
+    // Generic methods.
     
     /**
      * Check whether or not this seagrass is to reproduce at this step.
@@ -69,7 +43,7 @@ public abstract class Plant extends Organism
         if(newLocation != null){
             try
             {
-                //uses Java Reflection to make new instances of the Animal subclass calling the method
+                // Uses Java Reflection to make new instances of the Animal subclass calling the method
                 Constructor<? extends Plant> constructor = getClass().getDeclaredConstructor(Field.class, Location.class);
                 Plant newPlant = constructor.newInstance(getField(), newLocation) ;
                 newActors.add(newPlant);
@@ -79,5 +53,31 @@ public abstract class Plant extends Organism
                 System.out.println(e);
             }
         }
+    }
+    
+    /**
+     * A plant can reproduce if it has reached its reproducing age 
+     * and their reproduction probability allows it.
+     * 
+     * @param reproductionAge The minimum age at which a plant can start reproducing.
+     * @param reproductionProbability The probability of a plant reproducing.
+     * 
+     * @return true if the animal can breed, false otherwise.
+     */
+    protected boolean canReproduce(int reproductionAge, double reproductionProbability)
+    {
+        return getAge() >= reproductionAge && testProbability(reproductionProbability);
+    }
+    
+    // Class variables accessor methods.
+    
+    /**
+     * Return the infection probability.
+     * 
+     * @return The infection probability.
+     */
+    protected double getInfectionProbability()
+    {
+        return INFECTION_PROBABILITY;
     }
 }

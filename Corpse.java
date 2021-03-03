@@ -1,19 +1,25 @@
 import java.util.List; 
+
 /**
- * Write a description of class Corpse here.
+ * An abstract class representing shared characteristics of corpse.
  *
- * @author (your name)
- * @version (a version number or a date)
+ * @author Ivan Arabadzhiev and Adonis Daskalopulos
+ * @version 2021.03.03
  */
 public class Corpse extends Actor
 {
+    // Characteristics shared by all animals (class variables)
     
+    // The probability of a corpse decomposing.
     private static final double DECOMPOSITION_PROBABILITY = 0.1;
-    
+    // The corpse's worth as a food source.
     private static final int FOOD_VALUE = 4;
 
     /**
-     * Constructor for objects of class Corpse
+     * Create a new corpse at a location in field, after an organism has died.
+     * 
+     * @param field The field currently occupied.
+     * @param location The location within the field.
      */
     public Corpse(Field field, Location location)
     {
@@ -23,19 +29,18 @@ public class Corpse extends Actor
     }
 
     /**
-     * This is what the small fish does most of the time - it swims 
-     * around and eat. It will search for a mate, breed or die of old age.
+     * This is what the corpses do - decomposing over time.
      * 
-     * @param newSmallFish A list to return newly hatched small fish.
+     * @param newCoprses A list to return new corpses.
+     * @param isDay The time of day.
+     * @param temperature The temperature of the surrounding.
      */
-    public void act(List<Actor> newActors, boolean isDay, double temperature)
+    public void act(List<Actor> newCoprses, boolean isDay, double temperature)
     { 
         if(isAlive()){
-            if(getRandom().nextDouble() <= DECOMPOSITION_PROBABILITY){
+            if(testProbability(DECOMPOSITION_PROBABILITY)){
                 setDead();
             }
         }
-
     }
-
 }

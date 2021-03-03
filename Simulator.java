@@ -6,37 +6,40 @@ import java.awt.Color;
 
 /**
  * A simple predator-prey simulator, based on a rectangular field
- * containing rabbits and foxes.
+ * containing small fish, sharks, turtles, doplhins, crabs, corpses, est.
  * 
- * @author David J. Barnes and Michael Kölling
- * @version 2016.02.29 (2)
+ * @author David J. Barnes and Michael Kölling, Ivan Arabadzhiev and Adonis Daskalopulos
+ * @version 2021.03.03
  */
 public class Simulator
 {
-    // Constants representing configuration information for the simulation.
+    // Constants representing configuration information for the simulation. (Class variables)
+    
     // The default width for the grid.
     private static final int DEFAULT_WIDTH = 120;
     // The default depth of the grid.
     private static final int DEFAULT_DEPTH = 80;
-    // 
+    // The default amount of steps for a day-night cycle.
     private static final int DEFAULT_DAYNIGHT_CYCLE = 100;
     // The default daily temperature increase
     private static final double DEFAULT_TEMP_INCREASE = 1;
     // The probability that a sark will be created in any given grid position.
     private static final double SHARK_CREATION_PROBABILITY = 0.015;
-    //
+    // The probability that a turtle will be created in any given grid position.
     private static final double TURTLE_CREATION_PROBABILITY = 0.02;
-    //
+    // The probability that a dolphin will be created in any given grid position.
     private static final double DOLPHIN_CREATION_PROBABILITY = 0.015;
     // The probability that a small fish will be created in any given grid position.
     private static final double SMALLFISH_CREATION_PROBABILITY = 0.1;
-    //
+    // The probability that a crab be created in any given grid position.
     private static final double CRAB_CREATION_PROBABILITY = 0.07;
-    //
+    // The probability that a seagrass be created in any given grid position.
     private static final double SEAGRASS_CREATION_PROBABILITY = 0.03;
-    //
+    // The probability that a algae be created in any given grid position.
     private static final double ALGAE_CREATION_PROBABILITY = 0.03;
 
+    // Instance fields representing configuration information for the simulation. (Instace fields)
+    
     // List of actors in the field.
     private List<Actor> actors;
     // The current state of the field.
@@ -45,25 +48,25 @@ public class Simulator
     private int step;
     // A graphical view of the simulation.
     private SimulatorView view;
-
+    // The amount of day light.
     private double dayLight;
-
+    // Represent the time of day.
     private boolean isDay;
-
+    // The amount of steps of a day-night cycle.
     private int dayNightCycle;
-
+    // Period of the cos wave, describing the day-night cycle and temperature.
     private double period;
-
+    // Mark the beginning of day/night.
     private double timeTracker;
-
+    // The amount of steps need of a day/night to pass.
     private double halfCycle;
-    
+    // The time of day.
     private String dayTime;
-    
+    // The temperature of the surroudning.
     private double temperature;
-    
+    // The amount the average temperature increases per day-night cycle.
     private double dailyTempIncrease;
-    
+    // The amount the average temperature increases per each step.
     private double stepTempIncrease;
 
     /**
@@ -76,8 +79,11 @@ public class Simulator
 
     /**
      * Create a simulation field with the given size.
+     * 
      * @param depth Depth of the field. Must be greater than zero.
      * @param width Width of the field. Must be greater than zero.
+     * @param dayNightCycle The amount of steps of a day-night cycle.
+     * @param dailyTempIncrease The amount the average temperature increases per day-night cycle.
      */
     public Simulator(int depth, int width, int dayNightCycle, double dailyTempIncrease)
     {
@@ -103,17 +109,17 @@ public class Simulator
         view.setColor(Corpse.class, new Color(150, 75, 0, 255));
         
         
-        //
+        // Initialise the fields.
         this.dayNightCycle = dayNightCycle;
         double denominator = dayNightCycle;
         period = 2/denominator;
-        this.dailyTempIncrease = dailyTempIncrease;
-        stepTempIncrease = dailyTempIncrease/denominator;
-        System.out.println(stepTempIncrease);
         isDay = true;
         dayTime = "day";
         timeTracker = denominator/4;
         halfCycle = denominator/2;
+        
+        this.dailyTempIncrease = dailyTempIncrease;
+        stepTempIncrease = dailyTempIncrease/denominator;
         temperature = 0.0;
 
         // Setup a valid starting point.
@@ -130,9 +136,10 @@ public class Simulator
     }
 
     /**
-     * 
+     * Change the time of day.
      */
-    public void changeDayTime(){
+    private void changeDayTime()
+    {
         isDay = !isDay;
         if(isDay){
             dayTime = "day";
@@ -143,18 +150,21 @@ public class Simulator
     }
     
     /**
-     * 
+     * Compute day light and temperature based on the current step.
      */
-    public void computeDayLight(){
-        double dayNightWave = Math.cos(period*Math.PI*step);
-        dayLight = 0.375*dayNightWave+0.625;
-        double tempIncrease = step*stepTempIncrease;
-        temperature = 5*dayNightWave+15+tempIncrease;
+    private void computeEnvironmentTraits()
+    {
+        double dayNightWave = Math.cos(period * Math.PI * step);
+        dayLight = 0.375 * dayNightWave + 0.625;
+        
+        double tempIncrease = step * stepTempIncrease;
+        temperature = 5 * dayNightWave + 15 + tempIncrease;
     }
 
     /**
      * Run the simulation from its current state for the given number of steps.
      * Stop before the given number of steps if it ceases to be viable.
+     * 
      * @param numSteps The number of steps to run for.
      */
     public void simulate(int numSteps)
@@ -168,13 +178,13 @@ public class Simulator
     /**
      * Run the simulation from its current state for a single step.
      * Iterate over the whole field updating the state of each
-     * fox and rabbit.
+     * actor.
      */
     public void simulateOneStep()
     {
         step++;
 
-        computeDayLight();
+        computeEnvironmentTraits();
 
         if(step == timeTracker){
             changeDayTime();
@@ -207,7 +217,7 @@ public class Simulator
         actors.clear();
         populate();
         isDay = true;
-        computeDayLight();
+        computeEnvironmentTraits();
         double denominator = dayNightCycle;
         timeTracker = denominator/4;
         // Show the starting state in the view.
@@ -265,6 +275,7 @@ public class Simulator
 
     /**
      * Pause for a given time.
+     * 
      * @param millisec  The time to pause for, in milliseconds
      */
     private void delay(int millisec)

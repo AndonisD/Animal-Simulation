@@ -11,27 +11,34 @@ import java.util.Map;
  * Colors for each type of species can be defined using the
  * setColor method.
  * 
- * @author David J. Barnes and Michael Kölling
- * @version 2016.02.29
+ * @author David J. Barnes and Michael Kölling, Ivan Arabadzhiev and Adonis Daskalopulos
+ * @version 2021.03.03
  */
 public class SimulatorView extends JFrame
 {
+    // Class variables.
+    
     // Colors used for empty locations.
     private static final Color EMPTY_COLOR = Color.white;
-
     // Color used for objects that have no defined color.
     private static final Color UNKNOWN_COLOR = Color.gray;
-
-    //
+    // Color used for organisms that are infected.
     private static final Color INFECTED_COLOR = Color.red;
-
+    //
     private final String STEP_PREFIX = "Step: ";
+    //
     private final String POPULATION_PREFIX = "Population: ";
+    // The prefix for the temperature label.
     private final String TEMPERATURE_PREFIX = "Temperature (°C): ";
+    // The prefix for the day time label.
     private final String DAYTIME_PREFIX = "Time: ";
+    //
     private JLabel stepLabel, dayTime, temperature, population;
+    //
     private FieldView fieldView;
 
+    // Instance fields.
+    
     // A map for storing colors for participants in the simulation
     private Map<Class, Color> colors;
     // A statistics object computing and storing simulation information
@@ -39,6 +46,7 @@ public class SimulatorView extends JFrame
 
     /**
      * Create a view of the given width and height.
+     * 
      * @param height The simulation's height.
      * @param width  The simulation's width.
      */
@@ -69,6 +77,7 @@ public class SimulatorView extends JFrame
 
     /**
      * Define a color to be used for a given class of animal.
+     * 
      * @param animalClass The animal's Class object.
      * @param color The color to be used for the given class.
      */
@@ -78,6 +87,10 @@ public class SimulatorView extends JFrame
     }
 
     /**
+     * Return the color of the objects.
+     * 
+     * @param animalClass The class' name.
+     * 
      * @return The color to be used for a given class of animal.
      */
     private Color getColor(Class animalClass)
@@ -94,10 +107,14 @@ public class SimulatorView extends JFrame
 
     /**
      * Show the current status of the field.
+     * 
      * @param step Which iteration step it is.
      * @param field The field whose status is to be displayed.
+     * @param dayLight The brightness of empty cells.
+     * @param time The time of day.
+     * @param currentTemp The current temperature.
      */
-    public void showStatus(int step, Field field, double colorFraction, String time, double currentTemp)
+    public void showStatus(int step, Field field, double dayLight, String time, double currentTemp)
     {
         if(!isVisible()) {
             setVisible(true);
@@ -128,7 +145,7 @@ public class SimulatorView extends JFrame
 
                 }
                 else {
-                    fieldView.drawMark(col, row, computeEmptyColor(colorFraction));
+                    fieldView.drawMark(col, row, computeEmptyColor(dayLight));
                 }
             }
         }
@@ -143,7 +160,11 @@ public class SimulatorView extends JFrame
     }
 
     /**
-     *
+     * Computes the brightness of the empty cells.
+     * 
+     * @param fraction The fraction of the color values.
+     * 
+     * @return The computed color.
      */
     private Color computeEmptyColor(double fraction){
         int colorValue = (int) Math.round(255 * fraction);
@@ -152,11 +173,11 @@ public class SimulatorView extends JFrame
         int blue = colorValue;
 
         return new Color(red, green, blue, 255);
-
     }
 
     /**
      * Determine whether the simulation should continue to run.
+     * 
      * @return true If there is more than one species alive.
      */
     public boolean isViable(Field field)

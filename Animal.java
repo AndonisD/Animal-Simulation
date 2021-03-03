@@ -10,13 +10,13 @@ import java.lang.reflect.*;
  */
 public abstract class Animal extends Organism
 {
-    // Characteristics shared by all animals (class variables);
+    // Characteristics shared by all animals (class variables)
 
     // The probability of an animal getting a desease.
     private static final double INFECTION_PROBABILITY = 0.0005;
-    // The probability of an animal spreading tthe desease.
+    // The probability of an animal spreading the desease.
     private static final double SPREADING_PROBABILITY = 0.5;
-    // 
+    //  The probability of an animal curing itself from a desease.
     private static final double CURE_PROBABILITY = 0.2;
 
     // Characteristics shared by all animals (instance fields).    
@@ -40,72 +40,9 @@ public abstract class Animal extends Organism
         setSpreadingProbability(SPREADING_PROBABILITY);
         setCureProbability(CURE_PROBABILITY);
     }
-
-    // Abstract methods.   
-
-    // Class variables accessor methods.
-    /**
-     * Return the infection probability.
-     * 
-     * @return The infection probability.
-     */
-    protected double getInfectionProbability()
-    {
-        return INFECTION_PROBABILITY;
-    }
-
-    /**
-     * Return the spreading probability.
-     * 
-     * @return The spreading probability.
-     */
-    protected double getSpreadingPorbability()
-    {
-        return SPREADING_PROBABILITY;
-    }
-
-    /**
-     * 
-     */
-    protected double getCureProbability()
-    {
-        return CURE_PROBABILITY;
-    }
-
-    // Instance fields accessor methods.
-
-    /**
-     * Return the time before next impregnation.
-     * 
-     * @return The remaining time before next impregnation.
-     */
-    protected int getTimeUntilImpregnation()
-    {
-        return timeUntilImpregnation;
-    }
-
-    /**
-     * Return boolean value depending on the animal's sex.
-     * 
-     * @return True if the animal is female, false otherwise.
-     */
-    protected boolean isFemale()
-    {
-        return isFemale;
-    }
-
-    // Instance fields mutator methods.
-
-    /**
-     * Change the gender of the animal.
-     */
-    protected void changeGender()
-    {
-        isFemale = !isFemale;
-    }
-
-    // Mutator methods, describing action or process.
-
+    
+    // Generic methods.
+    
     /**
      * Look for food source adjacent to the current location.
      * Only the first live food source is eaten.
@@ -132,23 +69,27 @@ public abstract class Animal extends Organism
             Actor food = (Actor) obj;
             if(!food.isAlive()) {
                 continue;
-            }
-
-            return eat(food, where);
+             }
+            return eat(where, food);
         }
         return null;
     }
 
     /**
+     * Feed upon a food source and return its location.
      * 
+     * @param where The location of the food source.
+     * @param food The food source.
+     * 
+     * @return The location of the food source or null if it is a plant.
      */
-    private Location eat(Actor food, Location where){
+    private Location eat(Location where, Actor food){
         if(food instanceof Organism){
             Organism organism = (Organism) food;
             if(organism.isAnimal()) { 
                 organism.setDead();                       
             }
-            //is a Plant - Plants get eaten bit by bit instead of getting killed
+            // Is a Plant - Plants get eaten bit by bit instead of getting killed.
             else{
                 organism.decrementVitality();
                 where = null;
@@ -157,13 +98,10 @@ public abstract class Animal extends Organism
         else{
             food.setDead(); 
         }
-
-        //is an Animal - kill
-
         incrementFoodLevel(food.getFoodValue());
         return where;
     }
-
+    
     /**
      * The process of an animal finding a mate of the same species
      * and of the opposite gender.
@@ -181,6 +119,7 @@ public abstract class Animal extends Organism
             if(obj == null){
                 continue;
             }
+            
             if(!toString().equals(obj.toString())) {
                 continue;
             }
@@ -194,26 +133,25 @@ public abstract class Animal extends Organism
     }
 
     /**
-     * 
+     * Create new instances of the same species. 
      * 
      * @param newAnimals A list to return newly born animals.
      * @param litterSize The number of births.
      */
-    protected void giveBirth(List<Actor> newActors, int litterSize){
+    protected void giveBirth(List<Actor> newAnimals, int litterSize){
         if(!isFemale()){
             return;
         }
-
         Field field = getField();
         List<Location> free = field.getFreeAdjacentLocations(getLocation());
         for(int b = 0; b < litterSize && free.size() > 0; b++) {
             Location loc = free.remove(0);
             try
             {
-                //uses Java Reflection to make new instances of the Animal subclass calling the method
+                // Uses Java Reflection to make new instances of the Animal subclass calling the method.
                 Constructor<? extends Animal> constructor = getClass().getDeclaredConstructor(Field.class, Location.class);
                 Animal newBorn = constructor.newInstance(getField(), loc) ;
-                newActors.add(newBorn);
+                newAnimals.add(newBorn);
             }
             catch(Exception e)
             {
@@ -234,12 +172,11 @@ public abstract class Animal extends Organism
      * @return The number of births (may be zero).
      */
     protected int impregnate(int breedingAge, int maxLitterSize, 
-    int pregnancyPeriod, double impregnationProbability)
+                             int pregnancyPeriod, double impregnationProbability)
     {
         if(!isFemale()){
             return 0;
         }
-
         int litterSize = 0;
         timeUntilImpregnation--;
         if(canBreed(breedingAge) && getRandom().nextDouble() <= impregnationProbability) {
@@ -280,5 +217,69 @@ public abstract class Animal extends Organism
                 }
             }
         }
+    }
+    
+    // Class variables accessor methods.
+    
+    /**
+     * Return the infection probability.
+     * 
+     * @return The infection probability.
+     */
+    protected double getInfectionProbability()
+    {
+        return INFECTION_PROBABILITY;
+    }
+
+    /**
+     * Return the spreading probability.
+     * 
+     * @return The spreading probability.
+     */
+    protected double getSpreadingPorbability()
+    {
+        return SPREADING_PROBABILITY;
+    }
+
+    /**
+     * Return the cure probability.
+     * 
+     * @return The cure probability.
+     */
+    protected double getCureProbability()
+    {
+        return CURE_PROBABILITY;
+    }
+
+    // Instance fields accessor methods.
+
+    /**
+     * Return the time before next impregnation.
+     * 
+     * @return The remaining time before next impregnation.
+     */
+    protected int getTimeUntilImpregnation()
+    {
+        return timeUntilImpregnation;
+    }
+
+    /**
+     * Return boolean value depending on the animal's sex.
+     * 
+     * @return True if the animal is female, false otherwise.
+     */
+    protected boolean isFemale()
+    {
+        return isFemale;
+    }
+
+    // Instance fields mutator methods.
+
+    /**
+     * Change the gender of the animal.
+     */
+    protected void changeGender()
+    {
+        isFemale = !isFemale;
     }
 }

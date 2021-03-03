@@ -1,5 +1,6 @@
 import java.util.HashSet;
 import java.util.List;
+
 /**
  * An abstract class representing shared characteristics of organisms.
  *
@@ -8,15 +9,15 @@ import java.util.List;
  */
 public abstract class Organism extends Actor
 {
-    //
-    //
-    private static double CORPSE_PROBABILITY = 0.1;
+    // Characteristics shared by all organisms (class variables).
+    
+    // The probability of an organism leaving a corpse.
+    private static final double CORPSE_PROBABILITY = 0.1;
     
     // Characteristics shared by all organisms (instance fields).
     
     // The kingdom that the organism represents.
-    private boolean isAnimal;
-        
+    private boolean isAnimal;        
     // The organism's age.
     private int age;
     // The age at which a shark starts to have a chance of dying of age.
@@ -29,6 +30,10 @@ public abstract class Organism extends Actor
     private int foodLevel;
     // The organism's maximum food level.
     private int maxFoodLevel;
+    // The minimum temperature required for the organism to survive
+    private double minTemp;
+    // The maximum temperature under which the organism can survive
+    private double maxTemp;
     // Whether the organism is infected or not.
     private boolean isInfected;
     // The probability of an organism getting infected by a disease
@@ -41,10 +46,6 @@ public abstract class Organism extends Actor
     private double deathProbability;
     // The rate of change of death probability.
     private double rateOfDecay;
-    // The minimum temperature required for the organism to survive
-    private double minTemp;
-    // The maximum temperature under which the organism can survive
-    private double maxTemp;
     // The probability of leaving a corpse after dying
     private double corpseProbability;
 
@@ -62,37 +63,102 @@ public abstract class Organism extends Actor
         ageOfDecay = 0;
         vitality = 0;
         diet = new HashSet<>();
-        foodLevel = 0;
-        maxFoodLevel = 0;
+        foodLevel = 1;
+        maxFoodLevel = 1;
+        minTemp = -99;
+        maxTemp = 99;
         isInfected = false;
         infectionProbability = 0.0;
         spreadingProbability = 0.0;
         cureProbability = 0.0;
         deathProbability = 0.0;
         rateOfDecay = 0.0;
-        minTemp = -99;
-        maxTemp = 99;
-        corpseProbability = CORPSE_PROBABILITY;
     }
 
-    // Abstract methods. 
-
-    
-    // Class variables mutator methods.
+    // Generic methods.
 
     /**
-     * Return the result of a given probability.
-     * 
-     * @param probability The probability it evaluates.
-     * 
-     * @return The result of a given probability.
+     * Check whether an organism has already been infected or not.
+     * Infect them if they are not carrying a disease.
+     *  
+     * @return True if it is infected, False otherwise.
      */
-    protected boolean testProbability(double probability)
+    protected boolean checkInfected()
     {
-        return getRandom().nextDouble() <= probability;
+        if(isInfected) {
+            cureOrDie();
+            return true;
+        }
+        else if(testProbability(infectionProbability)){
+            infect();
+            return true;
+        }
+        return false;
     }
-
+    
+    /**
+     * There is probability of an organism overcoming the disease.
+     */
+    protected void cureOrDie()
+    {
+        if(testProbability(cureProbability) ) {
+            changeInfected();
+        }
+    }
+    
+    /**
+     * Run through all scenarios that can kill an organism.
+     * 
+     * @param newOrganisms A list to receive new organisms.
+     * @param temp The surrounding temperature.
+     */
+    protected void decideDeath(List<Actor> newOrganisms, double temp)
+    {
+        if(isInfected()) {
+            setDead();
+        }
+        else if(getAge() > ageOfDecay) {
+            computeDeathProbability(rateOfDecay);
+            if(getRandom().nextDouble() <= getDeathProbability()) {
+                setDead();
+            }
+        }
+        else if(foodLevel <= 0) {
+            setDead();
+        }
+        else if(temp<minTemp || temp>maxTemp) {
+            setDead();
+        }
+    }
+    
+    /**
+     * After an organism dies there is a possibility of it leaving a corpse.
+     * 
+     * @param newOrganism A list to receive new organisms.
+     */
+    protected void leaveCorpseAfterDeath(List<Actor> newOrganisms){
+        Location location = getLocation();
+        Field field = getField();
+        setDead();
+        if(testProbability(corpseProbability)){
+            leaveCorpse(newOrganisms, field, location);
+        } 
+    }
+    
+    // Class variables accessor methods.
+    
+    /**
+     * Return the corpse probability of an organism.
+     * 
+     * @return The copse probability of an organsim.
+     */
+    protected double getCorpseProbability()
+    {
+        return CORPSE_PROBABILITY;
+    }
+    
     // Instance fields accessor methods.
+    
     /**
      * Check whether the organism is representative of the animal kingdom.
      *  
@@ -102,8 +168,6 @@ public abstract class Organism extends Actor
     {
         return isAnimal;
     }
-
-    
 
     /**
      * Return the age of the organism.
@@ -133,22 +197,6 @@ public abstract class Organism extends Actor
     protected int getVitality()
     {
         return vitality;
-    }
-
-    /**
-     * 
-     */
-    protected double getMinTemp()
-    {
-        return minTemp;
-    }
-
-    /**
-     * 
-     */
-    protected double getMaxTemp()
-    {
-        return maxTemp;
     }
 
     /**
@@ -192,7 +240,25 @@ public abstract class Organism extends Actor
         return maxFoodLevel;
     }
 
+    /**
+     * Return the minimum temperature of an organism surviving.
+     * 
+     * @return The minimum temperature of an organism surviving.
+     */
+    protected double getMinTemp()
+    {
+        return minTemp;
+    }
 
+    /**
+     * Return the maximum temperature of an organism dying.
+     * 
+     * @return The maxumu temperature of an organism dying.
+     */
+    protected double getMaxTemp()
+    {
+        return maxTemp;
+    }
 
     /**
      * Return whether the organism has been infected by a disease.
@@ -254,21 +320,16 @@ public abstract class Organism extends Actor
         return rateOfDecay;
     }
 
-    // Instance field set methods.
-    
-    protected void die(List<Actor> newActors){
-        Location location = getLocation();
-        Field field = getField();
-     
-        setDead();
-        if(testProbability(corpseProbability)){
-            leaveCorpse(newActors, field, location);
-        }
-        
+    // Instance field mutator methods.
+
+    /**
+     * Change the organism's kingdom.
+     */
+    protected void changeKingdom()
+    {
+        isAnimal = !isAnimal;
     }
-
     
-
     /**
      * Set the value to the food value field.
      * 
@@ -277,6 +338,14 @@ public abstract class Organism extends Actor
     protected void setAgeOfDecay(int ageOfDecay)
     {
         this.ageOfDecay = ageOfDecay;
+    }
+    
+    /**
+     * Increments the age of an organism.
+     */
+    protected void incrementAge()
+    {
+        age++;
     }
 
     /**
@@ -288,21 +357,13 @@ public abstract class Organism extends Actor
     {
         this.vitality = vitality;
     }
-
+    
     /**
-     * 
+     * Decrement the vitality of an organism. 
      */
-    protected void setMinTemp(double minTemp)
+    protected void decrementVitality()
     {
-        this.minTemp = minTemp;
-    }
-
-    /**
-     * 
-     */
-    protected void setMaxTemp(double maxTemp)
-    {
-        this.maxTemp = maxTemp;
+        vitality--;
     }
 
     /**
@@ -314,75 +375,34 @@ public abstract class Organism extends Actor
     {
         this.maxFoodLevel = maxFoodLevel;
     }
-
     
-
     /**
-     * Set the value of the infection probability field.
-     * 
-     * @param infectionProbability The probability of an organism catching a disease.
+     * Upon feeding on a food source the organism's food level is increased,
+     * if the food level exceeds the maximum food level it is set to the 
+     * maximum food level.
+     *  
+     * @param foodValue The organism's worth as a food source.
      */
-    protected void setInfectionProbability(double infectionProbability)
+    protected void incrementFoodLevel(int foodValue)
     {
-        this.infectionProbability = infectionProbability;
+        int newFoodLevel = foodLevel + foodValue;
+        if(newFoodLevel > maxFoodLevel){
+            foodLevel = maxFoodLevel;
+        }
+        else{
+            foodLevel = newFoodLevel;
+        }
     }
 
     /**
-     * Set the value of the spreading probability field.
-     * 
-     * @param spreadingProbability The probability of an organism passing the disease to other organisms.
+     * Upon "acting" the food level of an ogranism decreases, this may result in
+     * the organism's death.
      */
-    protected void setSpreadingProbability(double spreadingProbability)
+    protected void decrementFoodLevel()
     {
-        this.spreadingProbability = spreadingProbability;
+        foodLevel--;
     }
-
-    /**
-     * Set the value of the cure probability field.
-     * 
-     * @param cureProbability The probability of an organism curing itself from a disease.
-     */
-    protected void setCureProbability(double cureProbability)
-    {
-        this.cureProbability = cureProbability;
-    }
-
-    /**
-     * Set the value of the rate of decay field.
-     * 
-     * @param rateOfDecay The rate of change of death probability.
-     */
-    protected void setRateOfDecay(double rateOfDecay)
-    {
-        this.rateOfDecay = rateOfDecay;
-    }
-
-    // Instance fields mutator methods.
-
-    /**
-     * Change the organism's kingdom.
-     */
-    protected void changeKingdom()
-    {
-        isAnimal = !isAnimal;
-    }
-
-    /**
-     * Increments the age of an organism.
-     */
-    protected void incrementAge()
-    {
-        age++;
-    }
-
-    /**
-     * Decrement the vitality of an organism. 
-     */
-    protected void decrementVitality()
-    {
-        vitality--;
-    }
-
+    
     /**
      * Add a food source to the set of diet of an ogranism.
      * 
@@ -416,32 +436,25 @@ public abstract class Organism extends Actor
     }
 
     /**
-     * Upon feeding on a food source the organism's food level is increased,
-     * if the food level exceeds the maximum food level it is set to the 
-     * maximum food level.
+     * Set the value of the minimum temperature field.
      *  
-     * @param foodValue The organism's worth as a food source.
+     * @param minTemp The minimum temperature of an organism surviving.
      */
-    protected void incrementFoodLevel(int foodValue)
+    protected void setMinTemp(double minTemp)
     {
-        int newFoodLevel = foodLevel + foodValue;
-        if(newFoodLevel > maxFoodLevel){
-            foodLevel = maxFoodLevel;
-        }
-        else{
-            foodLevel = newFoodLevel;
-        }
+        this.minTemp = minTemp;
     }
 
     /**
-     * Upon "acting" the food level of an ogranism decreases, this may result in
-     * the organism's death.
+     * Set the value of the maximum temperature field.
+     * 
+     * @param maxTemp The maximum temperature of an organism surviving.
      */
-    protected void decrementFoodLevel()
+    protected void setMaxTemp(double maxTemp)
     {
-        foodLevel--;
+        this.maxTemp = maxTemp;
     }
-
+    
     /**
      * Change whether the organism carries a disease or not.
      */
@@ -460,36 +473,37 @@ public abstract class Organism extends Actor
             isInfected = true;
         }
     } 
-
+    
     /**
-     *  Check whether an organism has already been infected or not.
-     *  Infect them if they are not carrying a disease.
-     *  
-     *  @return True if it is infected, False otherwise.
-     */
-    protected boolean checkInfected()
-    {
-        if(isInfected) {
-            //cureOrDie();
-            return true;
-        }
-        else if(testProbability(infectionProbability)){
-            infect();
-            return true;
-        }
-        return false;
-    }
-
-    /**
+     * Set the value of the infection probability field.
      * 
+     * @param infectionProbability The probability of an organism catching a disease.
      */
-    protected void cureOrDie()
+    protected void setInfectionProbability(double infectionProbability)
     {
-        if(testProbability(cureProbability) ) {
-            changeInfected();
-        }
+        this.infectionProbability = infectionProbability;
     }
 
+    /**
+     * Set the value of the spreading probability field.
+     * 
+     * @param spreadingProbability The probability of an organism passing the disease to other organisms.
+     */
+    protected void setSpreadingProbability(double spreadingProbability)
+    {
+        this.spreadingProbability = spreadingProbability;
+    }
+
+    /**
+     * Set the value of the cure probability field.
+     * 
+     * @param cureProbability The probability of an organism curing itself from a disease.
+     */
+    protected void setCureProbability(double cureProbability)
+    {
+        this.cureProbability = cureProbability;
+    }
+    
     /**
      * Compute the death probability.
      *  
@@ -499,26 +513,14 @@ public abstract class Organism extends Actor
     {
         deathProbability = deathProbability + rateOfDecay;
     } 
-
+    
     /**
+     * Set the value of the rate of decay field.
      * 
+     * @param rateOfDecay The rate of change of death probability.
      */
-    protected void decideDeath(double temp, List<Actor> newActors)
+    protected void setRateOfDecay(double rateOfDecay)
     {
-        if(isInfected()) {
-            setDead();
-        }
-        else if(getAge() > ageOfDecay) {
-            computeDeathProbability(rateOfDecay);
-            if(getRandom().nextDouble() <= getDeathProbability()) {
-                setDead();
-            }
-        }
-        else if(foodLevel <= 0) {
-            setDead();
-        }
-        else if(temp<minTemp || temp>maxTemp) {
-            setDead();
-        }
+        this.rateOfDecay = rateOfDecay;
     }
 }

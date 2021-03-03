@@ -7,10 +7,12 @@ import java.util.HashMap;
  * for any class of object that is found within the field.
  * 
  * @author David J. Barnes and Michael Kölling
- * @version 2016.02.29
+ * @version 2021.03.03
  */
 public class FieldStats
 {
+    // Instance fields.
+    
     // Counters for each type of entity (fox, rabbit, etc.) in the simulation.
     private HashMap<Class, Counter> counters;
     // Whether the counters are currently up to date.
@@ -29,6 +31,7 @@ public class FieldStats
 
     /**
      * Get details of what is in the field.
+     * 
      * @return A string describing what is in the field.
      */
     public String getPopulationDetails(Field field)
@@ -37,6 +40,7 @@ public class FieldStats
         if(!countsValid) {
             generateCounts(field);
         }
+        
         for(Class key : counters.keySet()) {
             Counter info = counters.get(key);
             buffer.append(info.getName());
@@ -61,7 +65,8 @@ public class FieldStats
     }
 
     /**
-     * Increment the count for one class of animal.
+     * Increment the count for one class of actor.
+     * 
      * @param animalClass The class of animal to increment.
      */
     public void incrementCount(Class animalClass)
@@ -87,6 +92,7 @@ public class FieldStats
     /**
      * Determine whether the simulation is still viable.
      * I.e., should it continue to run.
+     * 
      * @return true If there is more than one species alive.
      */
     public boolean isViable(Field field)
@@ -96,6 +102,7 @@ public class FieldStats
         if(!countsValid) {
             generateCounts(field);
         }
+        
         for(Class key : counters.keySet()) {
             Counter info = counters.get(key);
             if(info.getCount() > 0) {
@@ -110,6 +117,7 @@ public class FieldStats
      * These are not kept up to date as foxes and rabbits
      * are placed in the field, but only when a request
      * is made for the information.
+     * 
      * @param field The field to generate the stats for.
      */
     private void generateCounts(Field field)

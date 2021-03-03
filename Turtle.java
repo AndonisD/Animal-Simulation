@@ -3,7 +3,7 @@ import java.util.Arrays;
 
 /**
  * A simple model of a Turtle.
- * Sharks age, move, feed, mate, breed and die.
+ * Turtles age, move, feed, mate, breed, get infected and die.
  * 
  * @author David J. Barnes, Michael Kölling, Ivan Arabadzhiev and Adonis Daskalopulos
  * @version 2021.03.03
@@ -16,6 +16,8 @@ public class Turtle extends Animal
     private static final int AGE_OF_DECAY = 200;
     // The maximum food level a shark can reach from feeding on a food source.
     private static final int MAX_FOOD_LEVEL = 60;
+    // The animal's food source(s).
+    private static final List<String> DEFAULT_DIET = Arrays.asList("Crab", "Seagrass");
     // The age at which a shark can start to breed.
     private static final int BREEDING_AGE = 18;
     // The probability of a female meeting a male.
@@ -28,11 +30,9 @@ public class Turtle extends Animal
     private static final int PREGNANCY_PERIOD = 6;   
     // The rate of change of death probability.
     private static final double RATE_OF_DECAY = 0.1;
-    // The animal's food source(s)
-    private static final List<String> DEFAULT_DIET = Arrays.asList("Crab", "Seagrass");
 
     /**
-     * Create a shark. A shark can be created as a new born (age zero
+     * Create a turtle. A turtle can be created as a new born (age zero
      * and not hungry). The gender is randomly decided.
      * 
      * @param field The field currently occupied.
@@ -46,53 +46,51 @@ public class Turtle extends Animal
             changeGender();
         }
         setAgeOfDecay(AGE_OF_DECAY);
+        setDiet(DEFAULT_DIET);
         setMaxFoodLevel(MAX_FOOD_LEVEL);
         incrementFoodLevel(getMaxFoodLevel()/2);
-        //addDiet("SmallFish");
         setRateOfDecay(RATE_OF_DECAY);
-        setDiet(DEFAULT_DIET);
     }
 
     /**
-     * This is what the shark does most of the time: it hunts for
+     * This is what the turtles do most of the time: it hunts for
      * its food sources. In the process, it searches for mate, it might breed, 
-     * die of hunger, or die of old age.
+     * die of hunger, die of old age, get infected.
      * 
-     * @param field The field currently occupied.
-     * @param newSmallSharks A list to return newly born sharks.
+     * @param newSmallSharks A list to return newly born turtles.
+     * @param isDay The time of day.
+     * @param temperature The temperature of the surrounding.
      */
-    public void act(List<Actor> newActors, boolean isDay, double temperature)
+    public void act(List<Actor> newTurtles, boolean isDay, double temperature)
     {
         if(isAlive()) {
             // Try to reproduce.
             if(foundMate()){
                 int litterSize = impregnate(BREEDING_AGE, MAX_LITTER_SIZE, PREGNANCY_PERIOD, 
                                             IMPREGNATION_PROBABILITY);
-                giveBirth(newActors, litterSize);
+                giveBirth(newTurtles, litterSize);
             }     
             // Try to infect others if it is a carrier of a disease.
             if(checkInfected()) {
                 spreadInfection();
             }
-            // Move towards a source of food if found.
+            // Try to find one of its food sources.
             Location newLocation = findFood();
             if(newLocation == null) { 
-                // No food found - try to move to a free location.
+                // No food found.
                 newLocation = getField().freeAdjacentLocation(getLocation());
             }
-            // See if it was possible to move.
+            // Try to move to a new location.
             if(newLocation != null) {
                 setLocation(newLocation);
             }
             else {
                 // Overcrowding.
-                die(newActors);
+                leaveCorpseAfterDeath(newTurtles);
             }
             incrementAge();
             decrementFoodLevel();
-            decideDeath(temperature, newActors);
+            decideDeath(newTurtles, temperature);
         }
     }
-
-
 }

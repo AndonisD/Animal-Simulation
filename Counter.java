@@ -7,10 +7,12 @@ import java.awt.Color;
  * the simulation.
  * 
  * @author David J. Barnes and Michael Kölling
- * @version 2016.02.29
+ * @version 2021.03.03
  */
 public class Counter
 {
+    // Instance fields.
+    
     // A name for this type of simulation participant
     private String name;
     // How many of this type exist in the simulation.
@@ -18,7 +20,8 @@ public class Counter
 
     /**
      * Provide a name for one of the simulation types.
-     * @param name  A name, e.g. "Fox".
+     * 
+     * @param name  A name, e.g. "Small fish".
      */
     public Counter(String name)
     {
@@ -27,6 +30,8 @@ public class Counter
     }
     
     /**
+     * Return the name, the short description of this type.
+     * 
      * @return The short description of this type.
      */
     public String getName()
@@ -35,6 +40,8 @@ public class Counter
     }
 
     /**
+     * Return the currrent count for this type.
+     * 
      * @return The current count for this type.
      */
     public int getCount()
