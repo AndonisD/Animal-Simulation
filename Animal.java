@@ -18,6 +18,8 @@ public abstract class Animal extends Organism
     private static final double SPREADING_PROBABILITY = 0.5;
     //  The probability of an animal curing itself from a desease.
     private static final double CURE_PROBABILITY = 0.2;
+    //  The probability of an animal curing itself from a desease.
+    private static final double CORPSE_PROBABILITY = 0.01;
 
     // Characteristics shared by all animals (instance fields).    
 
@@ -39,6 +41,7 @@ public abstract class Animal extends Organism
         setInfectionProbability(INFECTION_PROBABILITY);
         setSpreadingProbability(SPREADING_PROBABILITY);
         setCureProbability(CURE_PROBABILITY);
+        setCorpseProbability(CORPSE_PROBABILITY);
     }
     
     // Generic methods.

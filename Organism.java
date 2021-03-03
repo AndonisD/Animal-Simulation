@@ -71,6 +71,7 @@ public abstract class Organism extends Actor
         infectionProbability = 0.0;
         spreadingProbability = 0.0;
         cureProbability = 0.0;
+        corpseProbability = 0.0;
         deathProbability = 0.0;
         rateOfDecay = 0.0;
     }
@@ -115,19 +116,19 @@ public abstract class Organism extends Actor
     protected void decideDeath(List<Actor> newOrganisms, double temp)
     {
         if(isInfected()) {
-            setDead();
+            leaveCorpseAfterDeath(newOrganisms);
         }
         else if(getAge() > ageOfDecay) {
             computeDeathProbability(rateOfDecay);
             if(getRandom().nextDouble() <= getDeathProbability()) {
-                setDead();
+                leaveCorpseAfterDeath(newOrganisms);
             }
         }
         else if(foodLevel <= 0) {
-            setDead();
+            leaveCorpseAfterDeath(newOrganisms);
         }
         else if(temp<minTemp || temp>maxTemp) {
-            setDead();
+            leaveCorpseAfterDeath(newOrganisms);
         }
     }
     
@@ -502,6 +503,16 @@ public abstract class Organism extends Actor
     protected void setCureProbability(double cureProbability)
     {
         this.cureProbability = cureProbability;
+    }
+    
+    /**
+     * Set the value of the cure probability field.
+     * 
+     * @param cureProbability The probability of an organism curing itself from a disease.
+     */
+    protected void setCorpseProbability(double corpseProbability)
+    {
+        this.corpseProbability = corpseProbability;
     }
     
     /**

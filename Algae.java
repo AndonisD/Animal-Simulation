@@ -25,6 +25,8 @@ public class Algae extends Plant
     private static final int REPRODUCTION_AGE = 5;
     // The probability of a algae reproducing.
     private static final double RERODUCTION_PROBABILITY = 0.08;
+    // The number of cells that dictate how far seagrass can create an offspring. 
+    private static final int RERODUCTION_RANGE = 3;
     // The rate of change of death probability.
     private static final double RATE_OF_DECAY = 0.1;
     
