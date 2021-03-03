@@ -23,13 +23,16 @@ public class Shark extends Animal
     // The probability of a female meeting a male.
     private static final double MALE_TO_FEMALE_RATIO = 0.5;
     // The likelihood of sharks mating.
-    private static final double IMPREGNATION_PROBABILITY = 0.3;
+    private static final double IMPREGNATION_PROBABILITY = 0.6;
     // The maximum number of births.
     private static final int MAX_LITTER_SIZE = 4;
     // The minimun of steps before next pregnancy.
     private static final int PREGNANCY_PERIOD = 6;   
     // The rate of change of death probability.
     private static final double RATE_OF_DECAY = 0.1;
+    // The temperature above which sharks are not able to move around and hunt.
+    private static final double TEMPERATURE_LIMIT = 30.0;
+    
 
     /**
      * Create a shark. A shark can be created as a new born (age zero
@@ -67,27 +70,30 @@ public class Shark extends Animal
             // Try to reproduce.
             if(foundMate()){
                 int litterSize = impregnate(BREEDING_AGE, MAX_LITTER_SIZE, PREGNANCY_PERIOD, 
-                                            IMPREGNATION_PROBABILITY);
+                        IMPREGNATION_PROBABILITY);
                 giveBirth(newSharks, litterSize);
             }     
             // Try to infect others if it is a carrier of a disease.
             if(checkInfected()) {
                 spreadInfection();
             }
-            // Try to find one of its food sources.
-            Location newLocation = findFood();
-            if(newLocation == null) { 
-                // No food found.
-                newLocation = getField().freeAdjacentLocation(getLocation());
+            // Try to find one of its food sources, unless the temperature is too high.
+            if(temperature < TEMPERATURE_LIMIT){
+                Location newLocation = findFood();
+                if(newLocation == null) { 
+                    // No food found.
+                    newLocation = getField().freeAdjacentLocation(getLocation());
+                }
+                // Try to move to a new location.
+                if(newLocation != null) {
+                    setLocation(newLocation);
+                }
+                else {
+                    // Overcrowding.
+                    leaveCorpseAfterDeath(newSharks);
+                }
             }
-            // Try to move to a new location.
-            if(newLocation != null) {
-                setLocation(newLocation);
-            }
-            else {
-                // Overcrowding.
-                leaveCorpseAfterDeath(newSharks);
-            }
+
             incrementAge();
             decrementFoodLevel();
             decideDeath(newSharks, temperature);

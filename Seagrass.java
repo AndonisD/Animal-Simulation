@@ -58,6 +58,8 @@ public class Seagrass extends Plant
     public void act(List<Actor> newActors, boolean isDay, double temperature)
     {
         if(isAlive()) {
+            //
+            checkInfected();
             // Try to reproduce.
             if(canReproduce(REPRODUCTION_AGE, RERODUCTION_PROBABILITY)){
                 reproduce(newActors);

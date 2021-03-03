@@ -89,6 +89,9 @@ public abstract class Animal extends Organism
     private Location eat(Location where, Actor food){
         if(food instanceof Organism){
             Organism organism = (Organism) food;
+            if(organism.isInfected()){
+                infect();
+            }
             if(organism.isAnimal()) { 
                 organism.setDead();                       
             }
